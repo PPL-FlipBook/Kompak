@@ -95,8 +95,6 @@ DB_PASSWORD=password_anda
 
 Pastikan untuk mengganti `nama_database_anda`, `username_anda`, dan `password_anda` dengan kredensial database Anda yang sebenarnya.
 
-<p align="center">##Selamat Mencoba</p>
-
 ## Kontak
 
 Jika Anda memiliki pertanyaan atau umpan balik, silakan buka isu di repositori ini atau hubungi pengelola di amosaleksiatoziliwu@email.com.
