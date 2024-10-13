@@ -149,7 +149,15 @@
                                     <i class="ni ni-cloud-upload-96 text-dark opacity-10"></i> <!-- Ikon upload buku baru -->
                                 </div>
                                 <h5 class="text-white mb-1 position-relative">Buku Baru Diunggah<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">Baru</span></h5>
-                                <p>"Mengenal JavaScript" ditambahkan oleh Admin.</p>
+                                @if($subjectId)
+                                    <div>
+                                        <p>{{ $subjectId->description }}</p>
+                                    </div>
+                                @else
+                                    <div>
+                                        <p>Tidak ada deskripsi terbaru.</p>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <div class="carousel-item h-100" style="background-image: url('{{asset('assets/img/carousel-2.jpg')}}');
@@ -312,7 +320,6 @@
                         <form action="{{route('user.prosesCreate')}}" method="post">
                             @csrf
                             <div class="modal-body">
-
                                 <div class="mb-3">
                                     <label for="name" class="col-form-label">Name:</label>
                                     <input name="name" value="{{ old('name') }}" type="text" class="form-control" id="name" required>
@@ -329,8 +336,9 @@
                                 <div class="mb-3">
                                     <label for="role" class="col-form-label">Role:</label>
                                     <select name="role" class="form-select" id="role">
-                                        <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
-                                        <option value="User" {{ old('role') == 'User' ? 'selected' : '' }}>User</option>
+                                    <option value="User" {{ old('role', $user->role ?? '') == 'User' ? 'selected' : '' }}>User</option>
+                                    <option value="Admin" {{ old('role', $user->role ?? '') == 'Admin' ? 'selected' : '' }}>Admin</option>
+                                    <option value="Super Admin" {{ old('role', $user->role ?? '') == 'Super Admin' ? 'selected' : '' }}>Super Admin</option>
                                     </select>
                                 </div>
                             </div>
@@ -424,7 +432,17 @@
                                     </div>
                                     <div class="d-flex flex-column">
                                         <h6 class="mb-1 text-dark text-sm">Buku Baru Diunggah</h6>
-                                        <span class="text-xs">"Mengenal JavaScript" ditambahkan oleh Admin.</span>
+                                        <span class="text-xs">
+                                            @if($subjectId)
+                                                <div>
+                                                    <p class="mb-0 text-xs">{{ $subjectId->description }}</p>
+                                                </div>
+                                                    @else
+                                                <div>
+                                                    <p class="mb-0 text-xs">Tidak ada deskripsi terbaru.</p>
+                                                </div>
+                                            @endif
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="d-flex">
@@ -465,8 +483,6 @@
                                     </button>
                                 </div>
                             </li>
-
-
                         </ul>
                     </div>
                 </div>

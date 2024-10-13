@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use App\Models\UserRoleTransition;
+use Illuminate\Http\Request;
+
+class UserRoleTransitionController extends Controller
+{
+    // Menampilkan semua transisi peran
+    public function index()
+    {
+        $transitions = User::with('user')->paginate(10);
+        return view('backend.role_transitions.index', compact('transitions'));
+    }
+
+    // Menampilkan form untuk mengubah peran pengguna
+    public function edit(User $user)
+    {
+        return view('backend.role_transitions.edit', compact('user'));
+    }
+
+    // Menyimpan perubahan peran pengguna
+    public function update(Request $request, User $user)
+    {
+        $oldRole = $user->role;
+        $newRole = $request->input('role');
+
+        // Update peran di tabel users
+        $user->role = $newRole;
+        $user->save();
+
+        // Simpan ke tabel user_role_transitions
+        UserRoleTransition::create([
+            'user_id' => $user->id,
+            'old_role' => $oldRole,
+            'new_role' => $newRole,
+            'changed_by' => auth()->user()->id, // Pengubah peran (Super Admin)
+            'changed_at' => now(),
+        ]);
+
+        return redirect()->route('role_transitions.index')->with('success', 'Role updated successfully');
+    }
+
+    // Menampilkan riwayat transisi peran pengguna tertentu
+    public function history(User $user)
+    {
+        $transitions = UserRoleTransition::where('user_id', $user->id)->get();
+        return view('role_transitions.history', compact('user', 'transitions'));
+    }
+}

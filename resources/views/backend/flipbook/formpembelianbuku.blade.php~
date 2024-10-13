@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Buku Sederhana</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .book-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .book-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+        }
+        .book-card img {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .book-card button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Dashboard Buku</h1>
+<div class="book-container" id="bookContainer"></div>
+
+<div id="purchaseModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Form Pembelian</h2>
+        <form id="purchaseForm">
+            <p id="selectedBookInfo"></p>
+            <select id="paymentMethod" required>
+                <option value="">Pilih metode pembayaran</option>
+                <option value="ewallet">E-Wallet</option>
+                <option value="bank">Transfer Bank</option>
+            </select>
+            <div id="accountInfo" style="display: none;"></div>
+            <input type="file" id="proofOfPayment" accept="image/*" required>
+            <button type="submit">Kirim Bukti Pembayaran</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const books = [
+        { id: 1, title: "Buku 1", image: "https://via.placeholder.com/150x200", price: 100000 },
+        { id: 2, title: "Buku 2", image: "https://via.placeholder.com/150x200", price: 150000 },
+        { id: 3, title: "Buku 3", image: "https://via.placeholder.com/150x200", price: 120000 },
+    ];
+
+    const paymentMethods = {
+        ewallet: { name: "E-Wallet", accountNumber: "081234567890" },
+        bank: { name: "Transfer Bank", accountNumber: "1234567890" },
+    };
+
+    const bookContainer = document.getElementById('bookContainer');
+    const modal = document.getElementById('purchaseModal');
+    const closeBtn = document.getElementsByClassName('close')[0];
+    const purchaseForm = document.getElementById('purchaseForm');
+    const paymentMethodSelect = document.getElementById('paymentMethod');
+    const accountInfo = document.getElementById('accountInfo');
+    const selectedBookInfo = document.getElementById('selectedBookInfo');
+
+    // Render books
+    books.forEach(book => {
+        const bookCard = document.createElement('div');
+        bookCard.className = 'book-card';
+        bookCard.innerHTML = `
+                <img src="${book.image}" alt="${book.title}">
+                <h3>${book.title}</h3>
+                <p>Harga: Rp ${book.price.toLocaleString()}</p>
+                <button onclick="openPurchaseModal(${book.id})">Beli</button>
+            `;
+        bookContainer.appendChild(bookCard);
+    });
+
+    // Open purchase modal
+    function openPurchaseModal(bookId) {
+        const book = books.find(b => b.id === bookId);
+        selectedBookInfo.textContent = `${book.title} - Rp ${book.price.toLocaleString()}`;
+        modal.style.display = 'block';
+    }
+
+    // Close modal
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Handle payment method change
+    paymentMethodSelect.onchange = function() {
+        const selectedMethod = paymentMethods[this.value];
+        if (selectedMethod) {
+            accountInfo.style.display = 'block';
+            accountInfo.textContent = `Nomor Akun ${selectedMethod.name}: ${selectedMethod.accountNumber}`;
+        } else {
+            accountInfo.style.display = 'none';
+        }
+    }
+
+    // Handle form submission
+    purchaseForm.onsubmit = function(e) {
+        e.preventDefault();
+        const paymentMethod = paymentMethodSelect.value;
+        const proofOfPayment = document.getElementById('proofOfPayment').files[0];
+
+        console.log('Pembelian diproses:', {
+            book: selectedBookInfo.textContent,
+            paymentMethod: paymentMethod,
+            proofOfPayment: proofOfPayment ? proofOfPayment.name : 'Tidak ada file'
+        });
+
+        alert('Pembelian berhasil diproses!');
+        modal.style.display = 'none';
+        this.reset();
+    }
+</script>
+</body>
+</html>

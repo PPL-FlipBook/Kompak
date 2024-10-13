@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\ActivitasLogController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FlipbookController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserRoleTransitionController;
 use App\Models\Book;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
@@ -23,13 +26,28 @@ use Illuminate\Support\Facades\File;
 
 
 /*Route User*/
-Route::get('/',[UserController::class,'index'])->name('dashboard.index');
-Route::get('/create',[UserController::class,'create'])->name('user.create');
-Route::post('/prosesCreate',[UserController::class,'prosesCreate'])->name('user.prosesCreate');
-Route::get('/edit/{id}',[UserController::class,'edit'])->name('user.edit');
-Route::post('/update/{id}',[UserController::class,'update'])->name('user.update');
-Route::delete('/destroy/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/create', [DashboardController::class, 'create'])->name('user.create');
+    Route::post('/prosesCreate', [DashboardController::class, 'prosesCreate'])->name('user.prosesCreate');
+    Route::get('/edit/{id}', [DashboardController::class, 'edit'])->name('user.edit');
+    Route::post('/update/{id}', [DashboardController::class, 'update'])->name('user.update');
+    Route::delete('/destroy/{id}', [DashboardController::class, 'destroy'])->name('user.destroy');
 
+/*auth login*/
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'index'])->name('auth.index');
+    Route::post('/login', [AuthController::class, 'verify'])->name('auth.verify');
+    Route::get('/register', [AuthController::class, 'register'])->name('register.index');
+    Route::post('/register', [AuthController::class, 'registerProceed'])->name('register.verify');
+    Route::get('/register/activation/{token}', [AuthController::class, 'registerVerify']);
+    Route::get('/forgot-password', [AuthController::class, 'forgotpassword'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'resetPasswordEmail'])->name('password.email');
+    Route::get('/password/confirmation/{token}', [AuthController::class, 'showResetPasswordConfirmation'])->name('password.confirmation');
+    Route::post('/password/update/{token}', [AuthController::class, 'updatePassword'])->name('password.update');
+    Route::get('/reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+});
+
+Route::get('/Logout',[AuthController::class, 'Logout'])->name('auth.logout');
 
 /*Route Book*/
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
@@ -37,14 +55,12 @@ Route::post('/books', [BookController::class, 'store'])->name('books.store');
 Route::get('/books/{id}/edit', [BookController::class, 'edit'])->name('books.edit');
 Route::put('/books/{id}', [BookController::class, 'update'])->name('books.update');
 Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('books.destroy');
+Route::get('/books/{id}',[BookController::class,'flipbook'])->name('books.show');
 
-/*Route Flipbook*/
-Route::get('/flipbook',[FlipbookController::class,'flipbook'])->name('dashboard.flipbook');
-Route::get('/create-flipbook',[FlipbookController::class,'createFlipbook'])->name('flipbook.create');
-Route::post('/prosesCreate-flipbook',[FlipbookController::class,'prosesCreateFlipbook'])->name('flipbook.prosesCreate');
-Route::get('/edit-flipbook/{id}',[FlipbookController::class,'editFlipbook'])->name('flipbook.edit');
-Route::post('/update-flipbook/{id}',[FlipbookController::class,'updateFlipbook'])->name('flipbook.update');
-Route::delete('/destroy-flipbook/{id}', [FlipbookController::class, 'destroyFlipbook'])->name('flipbook.destroy');
+
+/*Route Frontend*/
+Route::get('/', [FlipbookController::class, 'index'])->name('frontend.index');
+Route::get('/flipbook/{id}',[FlipbookController::class,'flipbook'])->name('frontend.example1');
 
 /*Route Billing*/
 Route::get('/billing',[Controller::class,'billing'])->name('dashboard.billing');

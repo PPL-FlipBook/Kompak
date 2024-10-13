@@ -87,7 +87,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('frontend.example1', $book->id) }}"><i class="fas fa-eye"></i></a>
+{{--                                        <a href="{{ route('books.show', $book->id) }}"><i class="fas fa-eye"></i></a>--}}
                                         <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#editBook-{{ $book->id }}">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -138,6 +138,16 @@
                     </div>
 
                 </div>
+                        @if($subjectId)
+                            <div>
+                                <p>Deskripsi Terbaru: {{ $subjectId->description }}</p>
+                            </div>
+                        @else
+                            <div>
+                                <p>Tidak ada deskripsi terbaru.</p>
+                            </div>
+                        @endif
+
             </div>
         </div>
     </main>
@@ -224,7 +234,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Deskripsi</label>
-                            <textarea name="description" id="description" class="form-control" rows="4">{{ old('description', $book->description ?? '') }}</textarea>
+                            <textarea name="description" id="description" class="form-control" rows="4"></textarea>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

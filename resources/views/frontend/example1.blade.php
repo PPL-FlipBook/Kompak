@@ -197,9 +197,33 @@
         .zoom-button:hover {
             background-color: rgba(255, 255, 255, 1);
         }
+
+        .header-buttons {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .close, .theme-toggle {
+            position: relative;
+            top: auto;
+            left: auto;
+            right: auto;
+        }
         @media (max-width: 768px) {
             body {
                 position: fixed;
+                padding-top: 60px;
+            }
+
+            .btn_1, .btnClose {
+                width: 30px;
+                height: 30px;
+                font-size: 1.2rem;
             }
 
             .theme-toggle {
@@ -275,6 +299,21 @@
                 font-size: 1.6rem; /* Ukuran font lebih kecil untuk subjudul atau keterangan */
                 color: #777;
             }
+
+            .close {
+                top: 20px;
+                left: 20px; /* Pindahkan ke kiri */
+                right: auto; /* Hapus posisi kanan */
+            }
+
+            .theme-toggle {
+                top: 20px;
+                right: 20px; /* Pastikan tetap di kanan */
+            }
+        }
+
+        .close {
+            z-index: 101; /* Lebih tinggi dari tombol tema */
         }
         h1 {
             font-size: 2.4rem; /* Sesuaikan ukuran font judul */
@@ -291,15 +330,17 @@
     </style>
 </head>
 <body>
-<div class="theme-toggle" id="themeToggle" title="Toggle Theme">
-    <button type="button" class="btn_1" id="themeButton">
-        <i class="bi bi-sun" id="themeIcon"></i>
-    </button>
-</div>
-<div class="close" title="Kembali">
-    <a href="{{route('books.index')}}" class="btnClose">
-        <i class="bi bi-skip-backward-fill"></i>
-    </a>
+<div class="header-buttons">
+    <div class="close" title="Kembali">
+        <a href="{{route('frontend.index')}}" class="btnClose">
+            <i class="bi bi-skip-backward-fill"></i>
+        </a>
+    </div>
+    <div class="theme-toggle" id="themeToggle" title="Toggle Theme">
+        <button type="button" class="btn_1" id="themeButton">
+            <i class="bi bi-sun" id="themeIcon"></i>
+        </button>
+    </div>
 </div>
 <div class="text-center my-5">
     @if($book)
@@ -488,17 +529,48 @@
     }
     themeToggle.addEventListener('click', () => {
         const isDark = body.classList.toggle('dark-theme');
-        body.style.backgroundColor = isDark ? '#333' : '#F5F5F5'; // Warna latar belakang
-        body.style.color = isDark ? '#E0E0E0' : '#333'; // Warna teks
+
+        // Atur warna latar belakang dan teks utama
+        body.style.backgroundColor = isDark ? '#1a1a1a' : '#F5F5F5'; // Latar belakang lebih gelap
+        body.style.color = isDark ? '#e0e0e0' : '#333'; // Teks sedikit off-white untuk mengurangi silau
+
+        // Atur warna ikon tema
         themeIcon.classList.toggle('bi-sun', !isDark);
         themeIcon.classList.toggle('bi-moon', isDark);
+        themeIcon.style.color = isDark ? '#ffffff' : '#FFA500'; // Putih untuk tema gelap, oranye untuk tema terang
 
-        // Update button color based on theme
+        // Atur warna teks untuk elemen-elemen spesifik
+        const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        headings.forEach(heading => {
+            heading.style.color = isDark ? '#ffffff' : '#333'; // Heading putih di tema gelap
+        });
+
+        const paragraphs = document.querySelectorAll('p');
+        paragraphs.forEach(p => {
+            p.style.color = isDark ? '#cccccc' : '#333'; // Paragraf sedikit lebih gelap dari putih
+        });
+
+        const links = document.querySelectorAll('a');
+        links.forEach(link => {
+            link.style.color = isDark ? '#4da6ff' : '#0066cc'; // Biru lebih terang untuk link di tema gelap
+        });
+
+        // Atur warna tombol tema
         if (isDark) {
             themeButton.classList.add('btn-dark');
+            themeButton.style.backgroundColor = '#333';
+            themeButton.style.borderColor = '#ffffff';
         } else {
             themeButton.classList.remove('btn-dark');
+            themeButton.style.backgroundColor = '#ffffff';
+            themeButton.style.borderColor = '#FFA500';
         }
+
+        // Atur warna untuk elemen-elemen lain jika diperlukan
+        const customElements = document.querySelectorAll('.custom-text-element');
+        customElements.forEach(element => {
+            element.style.color = isDark ? '#f0f0f0' : '#333';
+        });
     });
 
 

@@ -10,10 +10,11 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
+        // Create a user
         User::create([
             'id' => 1,
             'name' => 'Amosaleksiatoziliwu',
-            'email' => 'amosaleksiatoziliwu@gmail.com',
+            'email' => 'admin@admin.com',
             'password' => bcrypt('password'), // Use bcrypt to hash password
             'role' => 'Admin',
         ]);

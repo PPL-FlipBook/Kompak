@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\LogActivity;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,16 +14,18 @@ class BookController extends Controller
     // Menampilkan daftar buku
     public function index()
     {
-        $books = Book::with('categories')->paginate(10); // Fetch paginated books with categories
+        $books = Book::with('categories')->paginate(10);
         $categories = Category::all();
-        return view('backend.book.index', compact('books', 'categories'));
+        $subjectId = LogActivity::latest()->first();
+        return view('backend.book.index', compact('books', 'categories', 'subjectId'));
     }
 
     // Menampilkan form untuk membuat buku baru
     public function create()
     {
-        $categories = Category::all(); // Ambil semua kategori
-        return view('backend.book.create', compact('categories'));
+        $user = User::all();
+        $categories = Category::all();
+        return view('backend.book.create', compact('categories', 'user'));
     }
 
     // Menyimpan buku baru
@@ -39,7 +43,13 @@ class BookController extends Controller
             'categories.*' => 'uuid|exists:categories,id',
         ]);
 
-        $book = new Book($request->only(['title', 'author', 'upload_date', 'status', 'price', 'description']));
+        $book = new Book();
+        $book->title = $request->title;
+        $book->author = $request->author;
+        $book->upload_date = $request->upload_date;
+        $book->status = $request->status;
+        $book->price = $request->price;
+        $book->description = $request->description;
 
         // Menangani file PDF
         if ($request->hasFile('pdf_file')) {
@@ -55,12 +65,22 @@ class BookController extends Controller
             $book->cover_image = $imageFileName;
         }
 
-        // Menyimpan buku dan mengaitkan kategori
+        // Simpan buku
         $book->save();
+
+        // Menambahkan kategori
         if ($request->filled('categories')) {
             $book->categories()->attach($request->categories);
         }
 
+        if ($request->user()) {
+            $subjectId = $book->id;
+            Log::debug('Subject ID:', [$subjectId]);
+
+            activity()
+                ->performedOn($book)
+                ->log($request->user()->name . ' menambahkan buku baru');
+        }
         return redirect()->route('books.index')->with('success', 'Buku berhasil ditambahkan');
     }
 
@@ -120,6 +140,15 @@ class BookController extends Controller
             $book->categories()->detach(); // Jika tidak ada kategori yang dipilih, hapus semua
         }
 
+        if ($request->user()) {
+            $subjectId = $book->id;
+            Log::debug('Subject ID:', [$subjectId]);
+
+            activity()
+                ->performedOn($book)
+                ->log($request->user()->name . 'Berhasil mengedit buku');
+        }
+
         return redirect()->route('books.index')->with('success', 'Buku berhasil diperbarui');
     }
 
@@ -143,11 +172,9 @@ class BookController extends Controller
     public function flipbook($id)
     {
         $book = Book::find($id); // Fetch the specific book by ID
-
         if (!$book) {
             return redirect()->back()->with('error', 'Buku tidak ditemukan.');
         }
-
         return view('frontend.example1', compact('book')); // Pass the single book instance
     }
 }

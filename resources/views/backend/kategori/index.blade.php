@@ -116,7 +116,7 @@
     </main>
 
     <!-- Modal Tambah Kategori -->
-    <div class="modal fade" id="tambahKategori" tabindex="-1" aria-labelledby="tambahKategoriLabel" aria-hidden="true">
+    <div class="modal fade" id="tambahKategori" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="tambahKategoriLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -146,7 +146,7 @@
 
     <!-- Modal Edit Kategori -->
     @foreach($categories as $category)
-        <div class="modal fade" id="editKategori-{{ $category->id }}" tabindex="-1" aria-labelledby="editKategoriLabel-{{ $category->id }}" aria-hidden="true">
+        <div class="modal fade" id="editKategori-{{ $category->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editKategoriLabel-{{ $category->id }}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -178,7 +178,7 @@
 
     <!-- Modal Hapus Kategori -->
     @foreach($categories as $category)
-        <div class="modal fade" id="hapusKategori-{{ $category->id }}" tabindex="-1" aria-labelledby="hapusKategoriLabel-{{ $category->id }}" aria-hidden="true">
+        <div class="modal fade" id="hapusKategori-{{ $category->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="hapusKategoriLabel-{{ $category->id }}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
