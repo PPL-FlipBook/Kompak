@@ -31,7 +31,7 @@ Untuk memulai dengan proyek Website Flipbook, pastikan Anda memiliki PHP 8.1+, C
 
 1. Klon repositori:
    ```
-   git clone https://github.com/namaanda/proyek-flipbook.git
+   git@github.com:PPL-FlipBook/Kompak.git
    ```
 2. Masuk ke direktori proyek:
    ```
