@@ -95,13 +95,7 @@ DB_PASSWORD=password_anda
 
 Pastikan untuk mengganti `nama_database_anda`, `username_anda`, dan `password_anda` dengan kredensial database Anda yang sebenarnya.
 
-## Berkontribusi
-
-Kami menyambut kontribusi untuk proyek Website Flipbook! Silakan baca [Panduan Kontribusi](CONTRIBUTING.md) kami untuk detail tentang kode etik dan proses pengajuan pull request.
-
-## Lisensi
-
-Proyek Website Flipbook adalah perangkat lunak open-source yang dilisensikan di bawah [lisensi MIT](https://opensource.org/licenses/MIT).
+<p align="center">Selamat Mencoba</p>
 
 ## Kontak
 
