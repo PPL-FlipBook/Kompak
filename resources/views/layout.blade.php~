@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="{{asset('assets/img/apple-icon.png')}}">
   <link rel="icon" type="image/jpg" href="{{asset('assets/img/icon-flipbook.jpg')}}">
   <title>
-    FlipBook
+    FlipBook Dashboard
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -27,7 +27,7 @@
   <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html " target="_blank">
+      <a class="navbar-brand m-0" href="{{route("frontend.index")}}" target="_blank" title="Landing Page">
         <img src="{{asset('assets/img/flipbook.jpg')}}" class="navbar-brand-img h-100 radius" alt="main_logo">
         <span class="ms-1 font-weight-bold">FlipBook</span>
       </a>
@@ -87,7 +87,7 @@
                   </a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link {{ request()->is('pages/sign-in.html') ? 'active' : '' }}" href="{{ asset('pages/sign-in.html') }}">
+                  <a class="nav-link {{ request()->routeIs('auth.index') ? 'active' : '' }}" href="{{ route('auth.index') }}">
                       <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                           <i class="ni ni-single-copy-04 text-warning text-sm opacity-10"></i>
                       </div>
@@ -130,10 +130,13 @@
                           <input type="text" class="form-control pe-12" placeholder="Type here...">
                       </div>
                   </div>
+                  <div class="navbar-nav justify-content-end ms-md-auto pe-md-3 d-flex align-items-center">
+                  <p class="text-white my-auto fw-bold">Hi, {{ auth()->user()->role }}</p>
+                  </div>
                   <ul class="navbar-nav justify-content-end">
                       <li class="nav-item d-flex align-items-center">
                           <a href="{{ route('auth.logout') }}" class="nav-link text-white font-weight-bold px-0">
-                              <i class="fa fa-user me-sm-1"></i>
+                              <i class="fa fa-sign-out"></i>
                               <span class="d-sm-inline d-none">Log Out</span>
                           </a>
                       </li>

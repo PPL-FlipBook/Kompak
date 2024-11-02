@@ -4,48 +4,303 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlipBook Landing Page</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/jpg" href="{{asset('assets/img/icon-flipbook.jpg')}}">
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="{{asset('assets/css/nucleo-icons.css')}}" rel="stylesheet" />
+    <link href="{{asset('assets/css/nucleo-svg.css')}}" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="{{asset('assets/css/nucleo-svg.css')}}" rel="stylesheet" />
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
-        .hero {
-            background-color: #f8f9fa;
-            padding: 80px 0px;
+        /* Base styles and utilities */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            overflow-x: hidden;
+            padding-top: 100px;
         }
+
+        /* Navbar Styling */
+        nav {
+            transition: all 0.3s ease;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.7) !important;
+            padding: 1rem 0;
+        }
+
+        .navbar.scrolled {
+            background-color: rgba(33, 37, 41, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand,
+        .nav-link,
+        .navbar-nav .nav-link.active {
+            color: white !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: rgba(255, 255, 255, 0.8) !important;
+            transform: translateY(-1px);
+        }
+
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.5) !important;
+            padding: 0.5rem;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+        }
+
+        /* Atur Section */
+        html {
+            scroll-padding-top: 80px; /* Memberikan ruang untuk navbar */
+            scroll-behavior: smooth;
+        }
+
+        /* Section styling */
+        section {
+            padding-top: 80px; /* Memberikan ruang di atas setiap section */
+            margin-top: -20px; /* Mengompensasi padding-top */
+        }
+
+        /* Khusus untuk section about */
+        #about {
+            padding-top: 80px;
+            scroll-margin-top: 80px; /* Memastikan scroll berhenti di posisi yang tepat */
+        }
+
+        /* Hero section tetap memiliki styling khusus */
+        .hero {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: calc(80px + 2rem) 0 60px; /* Sesuaikan padding top */
+            margin-top: -80px;
+        }
+
+        /* Memastikan section headers tidak tertutup navbar */
+        section h2 {
+            padding-top: 20px; /* Memberikan ruang tambahan untuk heading */
+        }
+
+        /* Media queries untuk responsivitas */
+        @media (max-width: 991.98px) {
+            html {
+                scroll-padding-top: 60px;
+            }
+
+            section {
+                padding-top: 60px;
+                margin-top: -60px;
+            }
+
+            #about {
+                padding-top: 60px;
+                scroll-margin-top: 60px;
+            }
+
+            .hero {
+                padding: calc(60px + 2rem) 0 40px;
+            }
+        }
+
+        /* Custom logout button */
+        .custom-logout-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white !important;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 120px 0 80px;
+            margin-top: -76px; /* Adjust based on navbar height */
+        }
+
+        /* Book Carousel */
         .book-carousel {
             position: relative;
             width: 300px;
             height: 400px;
             margin: 0 auto;
+            perspective: 1000px;
         }
+
         .book-carousel img {
             position: absolute;
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             opacity: 0;
-            transition: opacity 0.5s;
+            transition: all 0.5s ease;
+            transform: translateY(20px);
         }
+
         .book-carousel img.active {
             opacity: 1;
+            transform: translateY(0);
         }
+
+        /* Featured Books Section */
         .featured-books {
             background-color: #f8f9fa;
+            padding: 80px 0;
         }
+
+        .book-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
         .book-item img {
             width: 100%;
             height: 300px;
             object-fit: cover;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-        .book-item img:hover {
-            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
+        .book-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-item:hover img {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Description Overlay */
+        .description-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 23.5%;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .description-overlay p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .book-item:hover .description-overlay {
+            opacity: 1;
+        }
+
+        /* Search Bar */
+        .input-group {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .input-group input {
+            border: none;
+            padding: 0.8rem 1.2rem;
+        }
+
+        .input-group .btn {
+            padding: 0.8rem 1.5rem;
+            background-color: #212529;
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .input-group .btn:hover {
+            background-color: #343a40;
+        }
+
+        /* About Section */
+        .bg-dark.rounded-circle {
+            width: 80px;
+            height: 80px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .bg-dark.rounded-circle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+        }
+
+        footer a {
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
+        }
+
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-control {
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+            border-color: #0d6efd;
+        }
+
+        /* Splash Screen */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -71,62 +326,48 @@
             100% { transform: perspective(400px) rotateY(360deg); }
         }
 
+        /* Responsive Adjustments */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background-color: rgba(33, 37, 41, 0.95);
+                padding: 1rem;
+                border-radius: 0.5rem;
+                margin-top: 0.5rem;
+            }
+
+            .hero {
+                padding: 100px 0 60px;
+                text-align: center;
+            }
+
+            .book-carousel {
+                margin-top: 2rem;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .book-item img {
+                height: 250px;
+            }
+
+            .description-overlay {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Additional Utility Classes */
         .fade-out {
             opacity: 0;
         }
 
-        nav {
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        .stay-white {
+            color: white !important;
         }
 
-        .bg-dark {
-            background-color: rgba(0, 0, 0, 0.8); /* Latar belakang gelap saat di atas */
-            color: white; /* Warna teks terang */
+        .custom-logout-btn.stay-white:hover {
+            color: white !important;
         }
 
-        .bg-transparent {
-            background-color: rgba(0, 0, 0, 0.3); /* Transparan dengan sedikit gelap */
-            color: white; /* Warna teks tetap terlihat */
-        }
-
-        nav a {
-            color: white; /* Pastikan link dalam navigasi tetap berwarna putih */
-        }
-
-        .shadow {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Memberi efek bayangan saat scroll */
-        }
-
-        .description-overlay {
-            border-radius: 10px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 23.5%;
-            background-color: rgba(0, 0, 0, 0.8); /* Dark background with transparency */
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0; /* Initially hide the overlay */
-            transition: opacity 0.3s ease; /* Smooth transition for the overlay */
-        }
-
-        .book-item:hover .description-overlay {
-            opacity: 1;
-        }
-
-        .book-item:hover {
-            transform: scale(1.05);
-        }
-
-        @media (max-width: 768px) {
-            .navbar-toggler{
-                background-color: #4b5563;
-                border-color: #ffffff;
-            }
-        }
     </style>
 </head>
 <body>
@@ -158,14 +399,30 @@
                     <a class="nav-link" href="#contact">Contact</a>
                 </li>
             </ul>
+
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a>
-                </li>
+                @if(auth()->check())
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard.index') }}" class="nav-link" target="_blank" title="Masuk ke Dashboard">
+                            <span class="d-none d-md-block">Hi, {{auth()->user()->name }}</span>
+                            <span class="d-md-none">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('auth.logout') }}" class="nav-link btn custom-logout-btn stay-white" title="Logout">
+                            <i class="fa fa-sign-out"></i> Logout
+                        </a>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('auth.index') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register.index') }}">Register</a>
+                    </li>
+                @endif
             </ul>
+
         </div>
     </div>
 </nav>
@@ -177,7 +434,7 @@
             <div class="col-lg-8 mb-4 mb-lg-0">
                 <h1 class="display-4 mb-4">Baca buku interaktif dengan pengalaman flipbook terbaik</h1>
                 <p class="lead mb-4">Nikmati pengalaman membaca yang imersif dan interaktif dengan teknologi flipbook terkini kami.</p>
-                <button class="btn btn-primary btn-dark" data-bs-toggle="modal" data-bs-target="#loginModal">Get Started</button>
+                <a class="btn btn-primary btn-dark" href="{{route('auth.index')}}">Get Started</a>
             </div>
             <div class="col-lg-4">
                 <div class="book-carousel">
@@ -405,14 +662,15 @@
 <script>
     window.addEventListener('scroll', function() {
         const nav = document.querySelector('nav');
-        const links = document.querySelectorAll('nav a'); // Ambil semua link di dalam navigasi
+        // Ubah selector untuk hanya mengambil link yang tidak memiliki class 'stay-white'
+        const links = document.querySelectorAll('nav a:not(.stay-white)');
 
         if (window.scrollY > 0) {
             nav.classList.add('bg-transparent', 'shadow');
             nav.classList.remove('bg-dark');
 
             links.forEach(link => {
-                link.classList.add('text-black'); // Ubah teks jadi hitam saat scroll
+                link.classList.add('text-black');
                 link.classList.remove('text-white');
             });
         } else {
@@ -420,7 +678,7 @@
             nav.classList.add('bg-dark');
 
             links.forEach(link => {
-                link.classList.remove('text-black'); // Kembalikan teks jadi putih saat di posisi awal
+                link.classList.remove('text-black');
                 link.classList.add('text-white');
             });
         }
@@ -453,7 +711,7 @@
 
     // Tampilkan splash screen selama 3 detik
     window.addEventListener('load', () => {
-        setTimeout(hideSplashScreen, 3000);
+        setTimeout(hideSplashScreen, 2000);
     });
 </script>
 
@@ -520,6 +778,18 @@
 
     // Event listener for "Buku Baru" button
     newBooksButton.addEventListener("click", showNewBooks);
+</script>
+
+<script>
+    window.addEventListener('scroll', function() {
+        const nav = document.querySelector('nav');
+
+        if (window.scrollY > 50) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
+    });
 </script>
 </body>
 </html>

@@ -87,6 +87,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
+                                        <a href="{{ route('purchases.create', $book->id) }}" class="text-info"><i class="fas fa-shopping-cart"></i></a>
 {{--                                        <a href="{{ route('books.show', $book->id) }}"><i class="fas fa-eye"></i></a>--}}
                                         <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#editBook-{{ $book->id }}">
                                             <i class="fas fa-edit"></i>
@@ -166,7 +167,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="title">Jud ul Buku</label>
+                                    <label for="title">Judul Buku</label>
                                     <input type="text" name="title" id="title" class="form-control" required>
                                 </div>
                             </div>

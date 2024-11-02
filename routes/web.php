@@ -7,11 +7,12 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FlipbookController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserRoleTransitionController;
+use App\Http\Controllers\PurchaseController;
 use App\Models\Book;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +75,19 @@ Route::delete('/kategory/{id}', [CategoryController::class, 'destroy'])->name('k
 
 /*Pdf*/
 Route::get('/flipbook/{id}',[BookController::class,'flipbook'])->name('frontend.example1');
+
+/*Purchase*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.index');
+    Route::get('/purchases/create/{flipbookId}', [PurchaseController::class, 'create'])->name('purchases.create');
+    Route::post('/purchases/store/{flipbookId}', [PurchaseController::class, 'store'])->name('purchases.store');
+    Route::get('/purchases/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
+    Route::delete('/purchases/{purchase}', [PurchaseController::class, 'destroy'])->name('purchases.destroy');
+    Route::get('/purchases/{purchase}/update-status/{status}', [PurchaseController::class, 'updateStatus'])
+        ->name('purchases.updateStatus')
+        ->middleware('can:admin');
+});
+
 
 /*Route Storage*/
 Route::get('storage/book{filename}', function ($filename) {

@@ -61,26 +61,28 @@ class PurchaseController extends Controller
     public function show(Purchase $purchase)
     {
         session(['url.intended' => url()->previous()]);
-
         // Pastikan hanya pemilik yang dapat melihat pembelian ini
-        if (auth()->id() !== $purchase->user_id) {
-            abort(403, 'Unauthorized action.');
+        $book = Book::findOrFail($id);
+
+        // Jika user sudah login, cek status pembelian
+        if (auth()->check()) {
+            $purchase = Purchase::where('user_id', auth()->id())
+                ->where('book_id', $id)
+                ->first();
+
+            // Jika buku sudah dibeli tapi status belum sukses
+            if ($purchase && $purchase->payment_status != 1) {
+                return view('backend.purchases.preview', compact('book', 'purchase'));
+            }
+
+            // Jika buku sudah dibeli dan status sukses
+            if ($purchase && $purchase->payment_status == 1) {
+                return view('backend.purchases.show', compact('book'));
+            }
         }
 
-        $book = $purchase->book;
-
-        // Jika buku sudah dibeli tapi status belum sukses
-        if ($purchase->payment_status != 1) {
-            return view('backend.purchases.preview', compact('book', 'purchase'));
-        }
-
-        // Jika buku sudah dibeli dan status sukses
-        if ($purchase->payment_status == 1) {
-            return view('backend.purchases.show', compact('purchase'));
-        }
-
-        // Jika tidak memenuhi kondisi di atas, mungkin redirect ke halaman lain
-        return redirect()->route('purchases.index')->with('error', 'Pembelian tidak valid.');
+        // Jika belum login atau belum membeli, tampilkan preview
+        return view('backend.purchases.preview', compact('book'));
     }
 
     // Menghapus pembelian tertentu

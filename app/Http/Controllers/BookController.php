@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\LogActivity;
+use App\Models\Purchase;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -171,10 +172,36 @@ class BookController extends Controller
     // Menampilkan flipbook
     public function flipbook($id)
     {
-        $book = Book::find($id); // Fetch the specific book by ID
-        if (!$book) {
-            return redirect()->back()->with('error', 'Buku tidak ditemukan.');
+        session(['url.intended' => url()->previous()]);
+        $book = Book::findOrFail($id);
+
+        // Jika user sudah login
+        if (auth()->check()) {
+            // Cek apakah user sudah membeli buku ini
+            $purchase = Purchase::where('user_id', auth()->id())
+                ->where('book_id', $id)
+                ->first();
+
+            // Jika belum membeli sama sekali
+            if (!$purchase) {
+                return view('frontend.book-preview', compact('book'));
+            }
+
+            // Jika sudah membeli tapi status belum sukses
+            if ($purchase->payment_status != 1) {
+                return view('frontend.book-preview', [
+                    'book' => $book,
+                    'purchase' => $purchase
+                ]);
+            }
+
+            // Jika sudah membeli dan status sukses
+            if ($purchase->payment_status == 1) {
+                return view('frontend.example1', compact('book'));
+            }
         }
-        return view('frontend.example1', compact('book')); // Pass the single book instance
+
+        // Jika user belum login
+        return view('frontend.book-preview', compact('book'));
     }
 }

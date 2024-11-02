@@ -10,6 +10,7 @@ class Purchase extends Model
 {
     use HasFactory, HasUuids;
 
+    // Daftar kolom yang dapat diisi melalui mass assignment
     protected $fillable = [
         'user_id',
         'book_id',
@@ -17,19 +18,30 @@ class Purchase extends Model
         'quantity',
         'total_amount',
         'payment_method',
-        'payment_status',
-        'bank_account_id',
+        'payment_status'
     ];
 
-    // Relasi ke tabel BankAccount
-    public function bankAccount()
+    // Relasi ke model User
+    public function user()
     {
-        return $this->belongsTo(BankAccount::class);
+        return $this->belongsTo(User::class);
     }
 
-    // Relasi ke tabel Book
+    // Relasi ke model Book
     public function book()
     {
         return $this->belongsTo(Book::class);
+    }
+
+    // Jika perlu, buat accessor untuk menampilkan status pembayaran
+    public function getStatusTextAttribute()
+    {
+        $status = [
+            -1 => 'Sedang Diproses',
+            0 => 'Pembelian Ditolak',
+            1 => 'Pembelian Sukses',
+        ];
+
+        return $status[$this->payment_status] ?? 'Unknown';
     }
 }

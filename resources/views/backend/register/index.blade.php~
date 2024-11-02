@@ -2,16 +2,16 @@
 @section('judul','Register')
 @section('content')
 
-{{--<header class="header">--}}
-{{--    <h1 class="title">FlipBook</h1>--}}
-{{--    <a href="#" class="sign-in">Sign In</a>--}}
-{{--</header>--}}
+<header class="header">
+    <h1 class="title">FlipBook</h1>
+    <a href="#" class="sign-in">Sign In</a>
+</header>
 
 <div class="register-page">
     <div class="register-box">
-{{--        <div class="close-btn">--}}
-{{--            <i class="fas fa-times"></i>--}}
-{{--        </div>--}}
+        <div class="close-btn">
+            <i class="fas fa-times"></i>
+        </div>
         <h2>Register</h2>
         <form class="form" method="post" action="{{route('register.index')}}">
             @csrf
@@ -41,11 +41,11 @@
     </div>
 </div>
 
-{{--<div class="close-icon">--}}
-{{--    <button aria-label="Close">--}}
-{{--        &#8592;--}}
-{{--    </button>--}}
-{{--</div>--}}
+<div class="close-icon">
+    <button aria-label="Close">
+        &#8592;
+    </button>
+</div>
 
 <script>
     document.querySelector('.close-btn').addEventListener('click', () => {

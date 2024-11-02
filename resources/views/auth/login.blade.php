@@ -2,16 +2,16 @@
 @section('judul', 'Login')
 @section('content')
 
-    <header class="header">
-        <h1 class="title">FlipBook</h1>
-        <a href="#" class="sign-in">Sign In</a>
-    </header>
+{{--    <header class="header">--}}
+{{--        <h1 class="title">FlipBook</h1>--}}
+{{--        <a href="#" class="sign-in">Sign In</a>--}}
+{{--    </header>--}}
 
     <div class="login-page">
         <div class="login-box">
-            <div class="close-btn">
-                <i class="fas fa-times"></i>
-            </div>
+{{--            <div class="close-btn">--}}
+{{--                <i class="fas fa-times"></i>--}}
+{{--            </div>--}}
             <h2>Login</h2>
             <form class="form" style="text-align: center;" method="post" action="{{ route('auth.verify') }}">
                 @csrf
@@ -38,11 +38,11 @@
         </div>
     </div>
 
-    <div class="close-icon">
-        <button aria-label="Close">
-            &#8592;
-        </button>
-    </div>
+{{--    <div class="close-icon">--}}
+{{--        <button aria-label="Close">--}}
+{{--            &#8592;--}}
+{{--        </button>--}}
+{{--    </div>--}}
 
     <script>
         document.querySelector('.close-btn').addEventListener('click', () => {

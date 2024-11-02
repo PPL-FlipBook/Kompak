@@ -7,11 +7,12 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FlipbookController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserRoleTransitionController;
+use App\Http\Controllers\PurchaseController;
 use App\Models\Book;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +27,7 @@ use Illuminate\Support\Facades\File;
 
 
 /*Route User*/
-    Route::prefix('admin')->middleware('role:admin')->group(function (){
-        Route::get('/',[DashboardController::class, 'index'])->name('dashboard.index')->middleware('role.admin');
-    });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/create', [DashboardController::class, 'create'])->name('user.create');
     Route::post('/prosesCreate', [DashboardController::class, 'prosesCreate'])->name('user.prosesCreate');
     Route::get('/edit/{id}', [DashboardController::class, 'edit'])->name('user.edit');
@@ -76,6 +75,21 @@ Route::delete('/kategory/{id}', [CategoryController::class, 'destroy'])->name('k
 
 /*Pdf*/
 Route::get('/flipbook/{id}',[BookController::class,'flipbook'])->name('frontend.example1');
+
+/*Purchase*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.index');
+    Route::get('/purchases/create/{flipbookId}', [PurchaseController::class, 'create'])->name('purchases.create');
+    Route::post('/purchases/store/{flipbookId}', [PurchaseController::class, 'store'])->name('purchases.store');
+    Route::get('/purchases/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
+    Route::delete('/purchases/{purchase}', [PurchaseController::class, 'destroy'])->name('purchases.destroy');
+    Route::get('/purchases/{purchase}/update-status/{status}', [PurchaseController::class, 'updateStatus'])
+        ->name('purchases.updateStatus')
+        ->middleware('can:admin');
+    Route::get('/purchases/{purchase}/edit', [PurchaseController::class, 'edit'])->name('purchases.edit');
+    Route::put('/purchases/{purchase}', [PurchaseController::class, 'update'])->name('purchases.update');
+});
+
 
 /*Route Storage*/
 Route::get('storage/book{filename}', function ($filename) {
