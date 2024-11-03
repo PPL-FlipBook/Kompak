@@ -30,24 +30,78 @@
                         <p class="mb-4">{{ $book->description }}</p>
 
                         @auth
-                            @if(isset($purchase))
-                                <div class="alert alert-warning">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                    Status pembelian Anda masih <strong>{{ $purchase->status_text }}</strong>.
-                                    Anda dapat membaca buku ini setelah status pembelian berubah menjadi "Sukses".
+                            @if($book->price == 0)
+                                <div class="alert alert-success">
+                                    <i class="fas fa-gift me-2"></i>
+                                    Buku ini <strong>GRATIS</strong>! Anda dapat membacanya langsung tanpa perlu membeli.
                                 </div>
-                            @else
-                                <a href="{{ route('purchases.create', ['book' => $book->id]) }}"
-                                   class="btn btn-primary">
-                                    Beli Buku
+                                <a href="{{ route('frontend.example1', $book->id) }}" class="btn btn-primary mt-2">
+                                    <i class="fas fa-book-open me-2"></i>Baca Buku Gratis
                                 </a>
+                            @else
+                                @php
+                                    $existingPurchase = \App\Models\Purchase::existingPurchase(auth()->id(), $book->id);
+                                @endphp
+
+                                @if($existingPurchase instanceof \App\Models\Purchase)
+                                    @if($existingPurchase->payment_status == -1)
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            Status pembelian Anda masih <strong>{{ $existingPurchase->status_text }}</strong>.
+                                            Anda dapat membaca buku ini setelah status pembelian berubah menjadi "Sukses".
+                                        </div>
+                                    @elseif($existingPurchase->payment_status == 1)
+                                        @if($showSuccessConfirmation)
+                                            <div class="alert alert-success">
+                                                <i class="fas fa-check-circle me-2"></i>
+                                                Pembelian Anda telah <strong>Sukses</strong>. Anda dapat membaca buku ini sekarang.
+                                            </div>
+                                        @endif
+                                        <a href="{{ route('frontend.example1', $book->id) }}" class="btn btn-primary mt-2">
+                                            <i class="fas fa-book-open me-2"></i>Baca Buku
+                                        </a>
+                                    @elseif($existingPurchase->payment_status == 0)
+                                        <div class="alert alert-danger">
+                                            <i class="fas fa-times-circle me-2"></i>
+                                            Pembelian Anda sebelumnya <strong>ditolak</strong>.
+                                        </div>
+                                        <div class="alert alert-info mt-2">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Silakan melakukan pembelian ulang untuk dapat membaca buku ini.
+                                        </div>
+                                        <div class="mt-3">
+                                            <p><strong>Harga:</strong> Rp {{ number_format($book->price, 0, ',', '.') }}</p>
+                                        </div>
+                                        <a href="{{ route('purchases.create', ['flipbookId' => $book->id]) }}" class="btn btn-primary mt-2">
+                                            <i class="fas fa-shopping-cart me-2"></i>Beli Buku Kembali
+                                        </a>
+                                    @endif
+                                @else
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Anda belum membeli buku ini. Silakan melakukan pembelian terlebih dahulu untuk dapat membaca buku ini.
+                                    </div>
+                                    <div class="mt-3">
+                                        <p><strong>Harga:</strong> Rp {{ number_format($book->price, 0, ',', '.') }}</p>
+                                    </div>
+                                    <a href="{{ route('purchases.create', ['flipbookId' => $book->id]) }}" class="btn btn-primary">
+                                        <i class="fas fa-shopping-cart me-2"></i>Beli Buku
+                                    </a>
+                                @endif
                             @endif
                         @else
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
-                                Silakan login untuk membeli dan membaca buku ini.
+                                Silakan login untuk membaca buku ini.
                             </div>
-                            <a href="{{ route('auth.index') }}" class="btn btn-primary">Login</a>
+                            @if($book->price > 0)
+                                <div class="mt-3">
+                                    <p><strong>Harga:</strong> Rp {{ number_format($book->price, 0, ',', '.') }}</p>
+                                </div>
+                            @endif
+                            <a href="{{ route('auth.index') }}" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </a>
                         @endauth
                     </div>
                 </div>

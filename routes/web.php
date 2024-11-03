@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FlipbookController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\PurchaseController;
 use App\Models\Book;
 use Illuminate\Support\Facades\Response;
@@ -88,6 +89,10 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('can:admin');
 });
 
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/library', [LibraryController::class, 'index'])->name('library.index');
+    Route::get('/library/{id}', [LibraryController::class, 'show'])->name('library.show');
+});
 
 /*Route Storage*/
 Route::get('storage/book{filename}', function ($filename) {

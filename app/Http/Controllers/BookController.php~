@@ -202,7 +202,7 @@ class BookController extends Controller
         if ($existingPurchase) {
             $data['existingPurchase'] = $existingPurchase;
 
-            if ($existingPurchase->payment_status == 1) {
+            if ($ existingPurchase->payment_status == 1) {
                 $data['showSuccessConfirmation'] = true;
                 return view('frontend.example1', $data);
             }

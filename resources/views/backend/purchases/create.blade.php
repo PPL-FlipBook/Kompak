@@ -1,27 +1,101 @@
 @extends('layout')
 
 @section('content')
-    <div class="container">
-        <h1>Beli Buku: {{ $flipbook->title }}</h1>
-
-        <form action="{{ route('purchases.store', $flipbook->id) }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label for="quantity" class="form-label">Jumlah</label>
-                <input type="number" name="quantity" id="quantity" class="form-control" value="1" min="1">
+    <div class="container py-4">
+        <div class="row justify-content-start">
+            <div class="col-md-10">
+                @if($flipbook->price == 0)
+                    <!-- Tampilan untuk buku gratis -->
+                    <div class="alert alert-success shadow-sm">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-gift fa-2x me-3"></i>
+                            <h5 class="mb-0">Buku Gratis!</h5>
+                        </div>
+                        <p class="mb-3">Buku ini tersedia secara gratis. Anda dapat langsung membacanya tanpa perlu melakukan pembelian.</p>
+                        <a href="{{ route('frontend.example1', $flipbook->id) }}" class="btn btn-success">
+                            <i class="fas fa-book-reader me-2"></i>Baca Sekarang
+                        </a>
+                    </div>
+                @else
+                    <!-- Status Checks untuk buku berbayar -->
+                    @php
+                        $existingPurchase = \App\Models\Purchase::where('user_id', Auth::id())
+                            ->where('book_id', $flipbook->id)
+                            ->orderBy('created_at', 'desc')
+                            ->first();
+                    @endphp
+                    @if($existingPurchase)
+                        @if($existingPurchase->payment_status == -1)
+                            <div class="alert alert-warning shadow-sm">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-clock fa-2x me-3"></i>
+                                    <h5 class="mb-0">Pembelian Sedang Diproses!</h5>
+                                </div>
+                                <p class="mb-3">Anda telah melakukan pembelian untuk buku ini dan sedang menunggu konfirmasi.</p>
+                                <a href="{{ route('purchases.index') }}" class="btn btn-warning">
+                                    <i class="fas fa-history me-2"></i>Cek Status Pembelian
+                                </a>
+                            </div>
+                        @elseif($existingPurchase->payment_status == 1)
+                            <div class="alert alert-success shadow-sm">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-check-circle fa-2x me-3"></i>
+                                    <h5 class="mb-0">Buku Sudah Dibeli!</h5>
+                                </div>
+                                <p class="mb-3">Anda telah memiliki buku ini. Silahkan nikmati buku Anda di perpustakaan digital.</p>
+                                <a href="{{ route('library.index') }}" class="btn btn-success">
+                                    <i class="fas fa-book-reader me-2"></i>Ke Perpustakaan Digital
+                                </a>
+                            </div>
+                        @else
+                            <div class="alert alert-info shadow-sm mb-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle fa-2x me-3"></i>
+                                    <p class="mb-0">Pembelian sebelumnya ditolak. Anda dapat mencoba membeli kembali.</p>
+                                </div>
+                            </div>
+                            @include('backend.purchases.purchase-form')
+                        @endif
+                    @else
+                        @include('backend.purchases.purchase-form')
+                    @endif
+                @endif
             </div>
-
-            <div class="mb-3">
-                <label for="payment_method" class="form-label">Metode Pembayaran</label>
-                <select name="payment_method" id="payment_method" class="form-control">
-                    <option value="Credit Card">Credit Card</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
-                    <option value="E-Wallet">E-Wallet</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Beli Sekarang</button>
-        </form>
+        </div>
     </div>
+
+    @push('styles')
+        <style>
+            .alert {
+                border: none;
+                border-radius: 10px;
+                padding: 1.5rem;
+            }
+
+            .alert i {
+                color: inherit;
+            }
+
+            .alert-warning {
+                background-color: #fff3cd;
+                color: #856404;
+            }
+
+            .alert-success {
+                background-color: #d4edda;
+                color: #155724;
+            }
+
+            .alert-info {
+                background-color: #d1ecf1;
+                color: #0c5460;
+            }
+
+            .btn {
+                border-radius: 6px;
+                padding: 0.5rem 1rem;
+                font-weight: 500;
+            }
+        </style>
+    @endpush
 @endsection

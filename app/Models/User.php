@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Traits\CausesActivity;
 
 class User extends Authenticatable
 {
+    use CausesActivity;
     protected $primaryKey = 'id';  // Mengatur primary key menjadi 'id'
     public $incrementing = false;   // Menghindari auto-increment
     protected $keyType = 'string';   // UUIDs are strings

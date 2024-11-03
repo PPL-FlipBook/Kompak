@@ -87,6 +87,23 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Bukti Pembayaran</td>
+                                <td>
+                                    <div class="d-flex px-2 py-1">
+                                        <div class="ms-2">
+                                            @if($purchase->payment_proof)
+                                                <img src="{{ asset('storage/' . $purchase->payment_proof) }}"
+                                                     alt="Bukti Pembayaran"
+                                                     class="img-fluid"
+                                                     style="max-width: 200px;">
+                                            @else
+                                                <p class="text-sm mb-0">Tidak ada bukti pembayaran</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</td>
                                 <td>
                                     <div class="d-flex px-2 py-1">
@@ -109,6 +126,7 @@
                                     </div>
                                 </td>
                             </tr>
+
                             </tbody>
                         </table>
                     </div>

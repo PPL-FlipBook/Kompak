@@ -332,7 +332,7 @@
 <body>
 <div class="header-buttons">
     <div class="close" title="Kembali">
-        <a href="{{ session('url.intended', route('frontend.index')) }}" class="btnClose">
+        <a href="{{ url()->previous() }}" class="btnClose">
             <i class="bi bi-skip-backward-fill"></i>
         </a>
     </div>
@@ -342,6 +342,7 @@
         </button>
     </div>
 </div>
+<!-- Konten buku -->
 <div class="text-center my-5">
     @if($book)
         <h1 class="text-bold">{{ $book->title }} <small class="text-muted"></small></h1>
@@ -366,8 +367,23 @@
         <i class="bi bi-chevron-right"></i>
     </button>
 </div>
+        <h4>
+        @if(isset($showFreeBookMessage) && $showFreeBookMessage)
+            <div class="alert alert-success">
+                <i class="fas fa-gift me-2"></i>
+                Buku ini <strong>GRATIS</strong>! Anda dapat membacanya langsung tanpa perlu membeli. Selamat menikmati!
+            </div>
+        @endif
 
-<div class="zoom-buttons">
+{{--        @if(isset($showSuccessConfirmation) && $showSuccessConfirmation)--}}
+{{--            <div class="alert alert-success">--}}
+{{--                <i class="fas fa-check-circle me-2"></i>--}}
+{{--                Pembelian Anda telah <strong>Sukses</strong>. Selamat membaca!--}}
+{{--            </div>--}}
+{{--        @endif--}}
+        </h4>
+
+        <div class="zoom-buttons">
     <button class="zoom-button" id="zoomOut" title="Zoom Out">
         <i class="bi bi-zoom-out"></i>
     </button>

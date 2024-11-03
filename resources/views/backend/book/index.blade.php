@@ -323,13 +323,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="pdf_file">Upload PDF</label>
-                                        <input type="file" name="pdf_file" id="pdf_file" class="form-control" accept="application/pdf">
+                                        <input type="file" name="pdf_file" id="pdf_file" required class="form-control" accept="application/pdf">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="cover_image">Upload Gambar Sampul</label>
-                                        <input type="file" name="cover_image" id="cover_image" class="form-control" accept="image/*">
+                                        <input type="file" name="cover_image" id="cover_image" required class="form-control" accept="image/*">
                                     </div>
                                 </div>
                             </div>

@@ -20,41 +20,85 @@ class PurchaseController extends Controller
     public function index()
     {
         $purchases = Purchase::where('user_id', Auth::id())->get();
-        return view('backend.purchases.index', compact('purchases'));
+        $freeBooks = Book::where('price', 0)->get(); // Tambahkan ini
+
+        return view('backend.purchases.index', compact('purchases', 'freeBooks'));
     }
 
     // Menampilkan form pembelian untuk flipbook tertentu
     public function create($flipbookId)
     {
         $flipbook = Book::findOrFail($flipbookId);
+
+        // Jika buku gratis, redirect langsung ke halaman baca
+        if ($flipbook->price == 0) {
+            return redirect()->route('frontend.example1', $flipbook->id);
+        }
+
         return view('backend.purchases.create', compact('flipbook'));
     }
 
     // Menyimpan pembelian baru
     public function store(Request $request, $flipbookId)
     {
+        $book = Book::findOrFail($flipbookId);
+
+        // Mencegah pembelian buku gratis
+        if ($book->price == 0) {
+            return redirect()->route('frontend.example1', $book->id)
+                ->with('info', 'Buku ini gratis dan dapat langsung dibaca.');
+        }
         // Validasi permintaan
         $request->validate([
             'quantity' => 'required|integer|min:1',
-            'payment_method' => 'required|in:Credit Card,Bank Transfer,E-Wallet,Other'
+            'payment_method' => 'required|in:Credit Card,Bank Transfer,E-Wallet,Other',
+            'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $book = Book::findOrFail($flipbookId);
+        $userId = Auth::id();
+
+        // Cek pembelian yang ada
+        $existingPurchase = Purchase::where('user_id', $userId)
+            ->where('book_id', $book->id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        // Cek status pembelian yang ada
+        if ($existingPurchase) {
+            if ($existingPurchase->payment_status == -1) {
+                return redirect()->back()
+                    ->with('error', 'Pembelian buku ini sedang diproses. Mohon tunggu konfirmasi.');
+            }
+
+            if ($existingPurchase->payment_status == 1) {
+                return redirect()->back()
+                    ->with('error', 'Anda sudah membeli buku ini sebelumnya.');
+            }
+
+            // Jika status == 0 (ditolak), lanjutkan dengan pembelian baru
+        }
+
+        // Proses upload gambar
+        $paymentProofPath = null;
+        if ($request->hasFile('payment_proof')) {
+            $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+        }
 
         // Membuat pembelian baru
         $purchase = Purchase::create([
-            'user_id' => Auth::id(),
+            'user_id' => $userId,
             'book_id' => $book->id,
             'purchase_date' => now(),
             'quantity' => $request->input('quantity'),
             'total_amount' => $book->price * $request->input('quantity'),
             'payment_method' => $request->input('payment_method'),
-            'payment_status' => -1  // Misalnya, -1 untuk 'Belum Dibayar'
+            'payment_status' => -1,  // Status awal 'Sedang Diproses'
+            'payment_proof' => $paymentProofPath,
         ]);
 
-        // Lakukan proses pembayaran di sini, misalnya integrasi dengan payment gateway
-
-        return redirect()->route('purchases.index')->with('success', 'Pembelian berhasil dibuat!');
+        return redirect()->route('purchases.index')
+            ->with('success', 'Pembelian berhasil dibuat dan sedang diproses!');
     }
 
     // Menampilkan detail pembelian tertentu
