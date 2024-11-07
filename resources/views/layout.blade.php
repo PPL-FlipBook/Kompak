@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="{{asset('assets/img/apple-icon.png')}}">
   <link rel="icon" type="image/jpg" href="{{asset('assets/img/icon-flipbook.jpg')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <title>
     FlipBook Dashboard
   </title>
@@ -68,11 +69,19 @@
                   </a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link {{ request()->is('pages/rtl.html') ? 'active' : '' }}" href="{{ asset('pages/rtl.html') }}">
+                  <a class="nav-link {{ request()->routeIs('purchases.index') ? 'active' : '' }}" href="{{ route('purchases.index') }}">
                       <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                          <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
+                          <i class="ni ni-cart text-info text-sm opacity-10"></i>
                       </div>
-                      <span class="nav-link-text ms-1">RTL</span>
+                      <span class="nav-link-text ms-1">Pembelian</span>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('library.index') ? 'active' : '' }}" href="{{ route('library.index') }}">
+                      <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                          <i class="ni ni-book-bookmark text-primary text-sm opacity-10"></i>
+                      </div>
+                      <span class="nav-link-text ms-1">Perpustakaan</span>
                   </a>
               </li>
               <li class="nav-item mt-3">

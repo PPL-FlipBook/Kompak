@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Log;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\LogActivity;
@@ -33,8 +33,8 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'author' => 'required|string|max:255',
+            'title' => 'required|string|max:50',
+            'author' => 'required|string|max:50',
             'upload_date' => 'required|date',
             'status' => 'required|in:Free,Paid',
             'price' => 'nullable|numeric|min:0',
@@ -44,6 +44,16 @@ class BookController extends Controller
             'categories.*' => 'uuid|exists:categories,id',
         ]);
 
+        $titleLength = strlen($request->title);
+        $authorLength = strlen($request->author);
+
+        if ($titleLength > 50) {
+            return back()->withErrors(['title' => "Judul tidak boleh lebih dari 50 karakter. Anda memasukkan $titleLength karakter."]);
+        }
+
+        if ($authorLength > 50) {
+            return back()->withErrors(['author' => "Penulis tidak boleh lebih dari 50 karakter. Anda memasukkan $authorLength karakter."]);
+        }
         $book = new Book();
         $book->title = $request->title;
         $book->author = $request->author;
@@ -202,7 +212,7 @@ class BookController extends Controller
         if ($existingPurchase) {
             $data['existingPurchase'] = $existingPurchase;
 
-            if ($ existingPurchase->payment_status == 1) {
+            if ($existingPurchase->payment_status == 1) {
                 $data['showSuccessConfirmation'] = true;
                 return view('frontend.example1', $data);
             }

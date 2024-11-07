@@ -191,7 +191,7 @@
                                     <label for="status">Status</label>
                                     <select name="status" id="status-tambah" class="form-select" required>
                                         <option value="Free">Free</option>
-                                        <option value="Paid">Paid</option>
+                                        <option value="Paid">Berbayar</option>
                                     </select>
                                 </div>
                             </div>
@@ -232,6 +232,9 @@
                                     <input type="file" name="cover_image" id="cover_image" class="form-control" accept="image/*">
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-12">
+                            <p class="text-danger" style="font-size: 0.8rem;">*Gambar yang diupload harus berupa potret</p>
                         </div>
                         <div class="form-group">
                             <label for="description">Deskripsi</label>

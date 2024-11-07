@@ -63,10 +63,7 @@
                                     @elseif($existingPurchase->payment_status == 0)
                                         <div class="alert alert-danger">
                                             <i class="fas fa-times-circle me-2"></i>
-                                            Pembelian Anda sebelumnya <strong>ditolak</strong>.
-                                        </div>
-                                        <div class="alert alert-info mt-2">
-                                            <i class="fas fa-info-circle me-2"></i>
+                                            Pembelian Anda sebelumnya <strong>ditolak,</strong>
                                             Silakan melakukan pembelian ulang untuk dapat membaca buku ini.
                                         </div>
                                         <div class="mt-3">

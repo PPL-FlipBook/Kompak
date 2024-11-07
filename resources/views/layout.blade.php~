@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="{{asset('assets/img/apple-icon.png')}}">
   <link rel="icon" type="image/jpg" href="{{asset('assets/img/icon-flipbook.jpg')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <title>
     FlipBook Dashboard
   </title>
@@ -130,7 +131,7 @@
                           <input type="text" class="form-control pe-12" placeholder="Type here...">
                       </div>
                   </div>
-                  <div class="navbar-nav justify-content-end ms-md-auto pe-md-3 d-flex align-items-center">
+                  <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                   <p class="text-white my-auto fw-bold">Hi, {{ auth()->user()->role }}</p>
                   </div>
                   <ul class="navbar-nav justify-content-end">

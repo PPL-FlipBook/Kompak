@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\SalesInformation;
+use Illuminate\Http\Request;
+
+class SalesInformationController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $salesInfo = SalesInformation::first();
+        return view('backend.information.index', compact('salesInfo'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'email' => 'required|email',
+            'phone_number' => 'nullable',
+            'bank_bri' => 'nullable',
+            'bank_bca' => 'nullable',
+            'bank_mandiri' => 'nullable',
+            'dana' => 'nullable',
+            'ovo' => 'nullable',
+            'gopay' => 'nullable',
+        ]);
+
+        SalesInformation::create($validatedData);
+
+        return redirect()->route('sales-information.index')
+            ->with('success', 'Informasi penjualan berhasil ditambahkan');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, SalesInformation $salesInformation)
+    {
+        $validatedData = $request->validate([
+            'email' => 'required|email',
+            'phone_number' => 'nullable',
+            'bank_bri' => 'nullable',
+            'bank_bca' => 'nullable',
+            'bank_mandiri' => 'nullable',
+            'dana' => 'nullable',
+            'ovo' => 'nullable',
+            'gopay' => 'nullable',
+        ]);
+
+        $salesInformation->update($validatedData);
+
+        return redirect()->route('sales-information.index')
+            ->with('success', 'Informasi penjualan berhasil diperbarui');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(SalesInformation $salesInformation)
+    {
+        $salesInformation->delete();
+
+        return redirect()->route('sales-information.index')
+            ->with('success', 'Informasi penjualan berhasil dihapus');
+    }
+}

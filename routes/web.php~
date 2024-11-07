@@ -85,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/purchases/store/{flipbookId}', [PurchaseController::class, 'store'])->name('purchases.store');
     Route::get('/purchases/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
     Route::delete('/purchases/{purchase}', [PurchaseController::class, 'destroy'])->name('purchases.destroy');
-    Route::put('/purchases/{purchase}/update-status/{status}', [PurchaseController::class, 'updateStatus'])
+    Route::get('/purchases/{purchase}/update-status/{status}', [PurchaseController::class, 'updateStatus'])
         ->name('purchases.updateStatus')
         ->middleware('can:admin');
 });

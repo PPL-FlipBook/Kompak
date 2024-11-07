@@ -10,7 +10,6 @@ class Purchase extends Model
 {
     use HasFactory, HasUuids;
 
-    // Daftar kolom yang dapat diisi melalui mass assignment
     protected $fillable = [
         'user_id',
         'book_id',
@@ -18,8 +17,15 @@ class Purchase extends Model
         'quantity',
         'total_amount',
         'payment_method',
+        'payment_account',
         'payment_status',
         'payment_proof',
+        'bank_bri',
+        'bank_bca',
+        'bank_mandiri',
+        'dana',
+        'ovo',
+        'gopay',
     ];
 
     // Relasi ke model User
@@ -34,13 +40,18 @@ class Purchase extends Model
         return $this->belongsTo(Book::class);
     }
 
-    // Jika perlu, buat accessor untuk menampilkan status pembayaran
+    // Relasi ke model SalesInformation (tambahkan ini)
+    public function salesInformation()
+    {
+        return $this->belongsTo(SalesInformation::class);
+    }
+
     public function getStatusTextAttribute()
     {
         $status = [
             -1 => 'Sedang Diproses',
-            0 => 'Pembelian Ditolak',
-            1 => 'Pembelian Sukses',
+            0 => 'Ditolak',
+            1 => 'Sukses',
         ];
 
         return $status[$this->payment_status] ?? 'Unknown';
@@ -50,7 +61,7 @@ class Purchase extends Model
     {
         return $query->where('user_id', $userId)
             ->where('book_id', $bookId)
-            ->whereIn('payment_status', [-1, 0, 1]) // Sedang Diproses, Ditolak, atau Sukses
+            ->whereIn('payment_status', [-1, 0, 1])
             ->latest()
             ->first();
     }
