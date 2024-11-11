@@ -8,7 +8,9 @@
         @csrf
         <div class="flex items-center justify-center">
             @if (session('pesan'))
-                <span class="inline-block bg-{{ session('pesan')[0] }}-100 text-{{ session('pesan')[0] }}-700 px-4 py-2 rounded text-center">{{ session('pesan')[1] }}</span>
+                <div class="bg-{{ session('pesan')[0] }}-100 text-{{ session('pesan')[0] }}-700 p-4 mb-4 rounded">
+                    {{ session('pesan')[1] }}
+                </div>
             @endif
         </div>
         <div class="mb-4 relative">

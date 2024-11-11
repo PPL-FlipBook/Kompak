@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use App\Mail\ResetPasswordEmail;
-use function Termwind\style;
 
 class AuthController extends Controller
 {
@@ -35,13 +35,7 @@ class AuthController extends Controller
                 return redirect()->route('auth.index')->with('pesan', ['danger', 'Akun belum diaktivasi. Silakan cek email Anda untuk aktivasi akun.']);
             }
             Auth::login($user);
-            if ($user->role == 'user') {
-                return redirect()->route('dashboard.index');
-            } elseif ($user->role == 'admin') {
-                return redirect()->route('dashboard.index');
-            } else {
-                return redirect()->route('dashboard.index');
-            }
+            return redirect()->route('dashboard.index');
         } else {
             return redirect()->route('auth.index')->with('pesan', ['danger', 'Kombinasi Email dan Password salah']);
         }
@@ -54,7 +48,6 @@ class AuthController extends Controller
 
     public function registerProceed(Request $request)
     {
-        // Validation rules and custom error messages
         $messages = [
             'name.required' => 'Nama tidak boleh kosong.',
             'email.required' => 'Email tidak boleh kosong.',
@@ -68,30 +61,27 @@ class AuthController extends Controller
             'password' => 'required',
         ], $messages);
 
-        // Check if email already exists
-        $user = User::query()->where('email', $request->email)->first();
-        if ($user !== null) {
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
             return back()->with('pesan', ['danger', 'Email sudah terdaftar.']);
         }
 
-        // Create new user
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
-        $user->is_active = 0; // User is not active initially
-        $user->token_activation = md5($request->email . date('Y-m-dH:i:s'));
+        $user->is_active = 0;
+        $user->token_activation = Str::random(60);
         $user->save();
 
-        // Send activation email
         Mail::to($user->email)->queue(new RegisterMail($user));
         return redirect('/login')->with('pesan', ['success', 'Registrasi Berhasil, cek email anda untuk aktivasi']);
     }
 
     public function registerVerify($token)
     {
-        $user = User::query()->where('token_activation', $token)->first();
-        if ($user === null) {
+        $user = User::where('token_activation', $token)->first();
+        if (!$user) {
             return redirect('/login')->with('pesan', ['danger', 'Token tidak ditemukan']);
         }
         $user->token_activation = null;
@@ -100,13 +90,15 @@ class AuthController extends Controller
         return redirect('/login')->with('pesan', ['success', 'Aktivasi Berhasil, anda sudah bisa login']);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::guard('user')->logout();
-        return redirect()->route('auth.index');
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
     }
 
-    public function forgotpassword()
+    public function forgotPassword()
     {
         return view('auth.forgotPassword');
     }
@@ -114,39 +106,39 @@ class AuthController extends Controller
     public function resetPasswordEmail(Request $request)
     {
         $request->validate(['email' => 'required|email']);
-
         $status = Password::sendResetLink($request->only('email'));
 
         if ($status === Password::RESET_LINK_SENT) {
-            return back()->with('status', __($status));
+            return back()->with('pesan', ['success', 'Link reset password sudah terkirim ke email anda.']);
         } else {
-            return back()->withErrors(['email' => __($status)]);
+            return back()->with('pesan', ['danger', 'Email tidak ditemukan.']);
         }
     }
 
-    public function showResetPasswordForm($token, Request $request)
+    public function showResetPasswordForm($token)
     {
-        $email = $request->email;
-        return view('auth.reset_password_confirmation', ['token' => $token, 'email' => $email]);
+        return view('auth.reset_password_confirmation', ['token' => $token]);
     }
 
-    public function updatePassword(Request $request, $token)
+    public function updatePassword(Request $request)
     {
-        $user = User::where('email', $token)->first();
-
-        if (!$user) {
-            return redirect()->route('auth.index')->with('pesan', ['danger', 'Token tidak valid.']);
-        }
-
         $request->validate([
-            'new_password' => 'required|min:6',
-            'c_new_password' => 'required_with:new_password|same:new_password|min:6',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
         ]);
 
-        $user->password = Hash::make($request->new_password);
-        $user->remember_token = null;
-        $user->save();
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+            }
+        );
 
-        return redirect()->route('auth.index')->with('status', __('Your password has been reset successfully.'));
+        return $status === Password::PASSWORD_RESET
+            ? redirect()->route('auth.index')->with('pesan', ['success', 'Password berhasil diperbarui.'])
+            : back()->with('pesan', ['danger', 'Token reset tidak valid.']);
     }
 }

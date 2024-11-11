@@ -1,53 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link href="{{asset('style.css')}}" rel="stylesheet">
-    <link href="{{asset('register.css')}}" rel="stylesheet">
-    <title>Login FlipBook</title>
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <!-- Custom fonts for this template-->
-    <link href="{{asset('assets/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Authentication')</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .auth-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 24rem;
+        }
+        .auth-input {
+            width: 100%;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+        }
+        .auth-button {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 0.25rem;
+            font-weight: 600;
+        }
+        .auth-button:hover {
+            background-color: #2563eb;
+        }
+        .auth-link {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+        .social-button {
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+        }
+    </style>
 </head>
-
-<body>
-    <!-- /.login-logo -->
-        <div class="card-body">
-            @yield('content')
-        </div>
-        <!-- /.card-body -->
-    <!-- /.card -->
-
-<!-- Bootstrap core JavaScript-->
-<script src="{{asset('assets/vendor/jquery/jquery.min.js')}}"></script>
-<script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="{{asset('assets/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="{{asset('assets/vendor/js/sb-admin-2.min.js')}}"></script>
-    <script>
-        $(function () {
-            @if(Session::has('gagal'))
-            toastr.error('{{Session::get('gagal')}}', 'Login Error')
-            @endif
-
-            @if(Session::has('sukses'))
-            toastr.success('{{Session::get('sukses')}}', 'Notifikasi')
-            @endif
-        });
-    </script>
-    @stack('js')
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<div class="auth-card">
+    @yield('content')
+</div>
 </body>
-
 </html>
