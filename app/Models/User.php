@@ -46,6 +46,11 @@ class User extends Authenticatable
         return $this->hasMany(Book::class);
     }
 
+    public function isAdmin()
+    {
+        return $this->role === 'admin'; // Sesuaikan dengan logika peran Anda
+    }
+
     // Relasi dengan model UserRoleTransition
     public function userRoleTransitions() // Penamaan diubah menjadi jamak
     {

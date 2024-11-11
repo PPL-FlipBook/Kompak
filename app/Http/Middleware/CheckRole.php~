@@ -17,18 +17,18 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        // Ambil guard dari parameter rute atau gunakan guard default
-        $guard = $request->route()->parameter('guard', 'web');
+        if (Auth::check()) {
+            // Get the user's role
+            $userRole = Auth::user()->role;
 
-        if (Auth::guard($guard)->check()) {
-            $userRole = Auth::guard($guard)->user()->role;
-
-            // Pastikan hanya peran yang diizinkan yang dapat mengakses
+            // Check if the user's role matches any of the allowed roles
             if (in_array($userRole, $roles)) {
+                // User is authorized, allow access to the route
                 return $next($request);
             }
         }
 
+        // User is not authorized, redirect back or to a specific route
         return redirect()->route('dashboard.index')->with('pesan', ['error', 'Unauthorized']);
     }
 }

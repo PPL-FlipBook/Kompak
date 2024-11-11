@@ -13,14 +13,12 @@ class DashboardController extends Controller
      * Display a listing of the resource.
      */
 
-    public function __construct()
-    {
-        // Protect the dashboard with the auth middleware
-        $this->middleware('auth');
-    }
-
     public function index()
     {
+        if(auth()->user()->role == 'super admin') {
+            return redirect()->route('dashboard.index');
+        }
+
         $user = auth()->user();
         $users = User::paginate(5);
         $totalUsers = User::count();

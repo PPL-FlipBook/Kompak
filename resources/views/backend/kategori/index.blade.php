@@ -11,6 +11,29 @@
                     </ol>
                     <h6 class="font-weight-bolder text-white mb-0">Kategori</h6>
                 </nav>
+
+                <div class="mt-3 me-4">
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            <i class="ni ni-like-2"></i>
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            <i class="ni ni-bell-55"></i>
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                        @if(session('delete'))
+                            <div class="alert alert-danger">
+                                <i class="ni ni-bell-55"></i>
+                                {{ session('delete') }}
+                            </div>
+                        @endif
+                </div>
             </div>
         </nav>
         <div class="row m-md-4">
@@ -24,19 +47,6 @@
                             </button>
                         </div>
                     </div>
-
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="alert alert-danger">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
                     <div class="table-responsive">
                         <table class="table align-items-center">
                             <thead>

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Book;
 use App\Models\Category;
@@ -15,9 +16,20 @@ class BookController extends Controller
     // Menampilkan daftar buku
     public function index()
     {
-        $books = Book::with('categories')->paginate(10);
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user();
+
+        // Jika pengguna adalah role 'user dan super admin', ambil semua buku
+        if (in_array($user->role, ['user', 'super admin'])) {
+            $books = Book::with('categories')->paginate(10);
+        } else {
+            // Jika pengguna adalah admin, ambil hanya buku yang ditambahkan oleh pengguna tersebut
+            $books = Book::with('categories')->where('user_id', $user->id)->paginate(10);
+        }
+
         $categories = Category::all();
         $subjectId = LogActivity::latest()->first();
+
         return view('backend.book.index', compact('books', 'categories', 'subjectId'));
     }
 
@@ -88,13 +100,13 @@ class BookController extends Controller
     // Menampilkan form untuk mengedit buku
     public function edit($id)
     {
-        $book = Book::with('categories')->findOrFail($id); // Ambil kategori bersama buku
+        $book = Book::with('categories')->findOrFail($id);
         $categories = Category::all();
         return view('backend.book.edit', compact('book', 'categories'));
     }
 
     // Memperbarui buku yang ada
-    public function update(Request $request, $id)
+    public function update(Request $request, $id )
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -136,9 +148,9 @@ class BookController extends Controller
 
         // Mengupdate kategori
         if ($request->filled('categories')) {
-            $book->categories()->sync($request->categories); // Menggunakan sync untuk mengupdate kategori
+            $book->categories()->sync($request->categories);
         } else {
-            $book->categories()->detach(); // Jika tidak ada kategori yang dipilih, hapus semua
+            $book->categories()->detach();
         }
 
         if ($request->user()) {
@@ -147,12 +159,11 @@ class BookController extends Controller
 
             activity()
                 ->performedOn($book)
-                ->log($request->user()->name . 'Berhasil mengedit buku');
+                ->log($request->user()->name . ' berhasil mengedit buku');
         }
 
         return redirect()->route('books.index')->with('success', 'Buku berhasil diperbarui');
     }
-
 
 
     // Menghapus buku
@@ -160,10 +171,9 @@ class BookController extends Controller
     {
         $book = Book::findOrFail($id);
         try {
-            // Menghapus hubungan dengan kategori jika diperlukan
             $book->categories()->detach();
             $book->delete();
-            return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus');
+            return redirect()->route('books.index')->with('delete', 'Buku berhasil dihapus');
         } catch (\Exception $e) {
             return redirect()->route('books.index')->with('error', 'Error deleting book: ' . $e->getMessage());
         }

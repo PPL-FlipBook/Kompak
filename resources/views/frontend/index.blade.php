@@ -437,7 +437,7 @@
                 <a class="btn btn-primary btn-dark" href="{{route('auth.index')}}">Get Started</a>
             </div>
             <div class="col-lg-4">
-                <div class="book-carousel">
+                <div class="book-carousel d-flex justify-content-center">
                     <img src="{{asset('assets-fe/book-1.png')}}" alt="Interactive Physics" class="active">
                     <img src="{{asset('assets-fe/book-2.png')}}" alt="Digital Marketing 101">
                     <img src="{{asset('assets-fe/book-3.png')}}" alt="Web Development Mastery">
@@ -494,7 +494,6 @@
                 <form>
                     <div class="input-group">
                         <input type="text" class="form-control" id="searchBook" placeholder="Cari buku...">
-                        <button class="btn btn-dark text" type="submit">Cari</button>
                     </div>
                 </form>
             </div>
@@ -503,43 +502,42 @@
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-4">
             @foreach($visibleBooks as $book)
                 <a href="{{ route('frontend.example1', $book->id) }}" class="text-decoration-none text-dark">
-                    <div class="col">
-                        <div class="book-item text-center position-relative">
-                            @if($book->cover_image)
-                                <img src="{{ Storage::url('books/images/' . $book->cover_image) }}" alt="{{ $book->title }}" class="mb-3">
-                                <h5>{{ $book->title }}</h5>
-                                <button class="btn btn-outline-dark mt-2">Read Now</button>
-                                <div class="description-overlay">
-                                    <p>{{ Str::limit($book->description, 150) }}</p> <!-- Assuming $book->description contains the book description -->
-                                </div>
-                            @else
-                                <div style="background-color: #ddd; width: 100%; height: 100%;">
-                                    <p>No image available</p>
-                                </div>
-                            @endif
+                    <div class="book-item text-center position-relative">
+                        @if($book->cover_image)
+                            <img src="{{ Storage::url('books/images/' . $book->cover_image) }}" alt="{{ $book->title }}" class="book-image mb-3">
+                        @else
+                            <img src="https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg"
+                                 class="book-image mb-3"
+                                 alt="No image available">
+                        @endif
+                        <h5>{{ $book->title }}</h5>
+                        <button class="btn btn-outline-dark mt-2">Read Now</button>
+                        <div class="description-overlay">
+                            <p>{{ Str::limit($book->description, 150) }}</p>
                         </div>
                     </div>
                 </a>
             @endforeach
         </div>
+
         <!-- Hidden Books (starting from the 9th book) -->
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-4 mt-1">
             @foreach($hiddenBooks as $bookItem)
                 <div class="col hidden-book" style="display:none;">
-                    <a href="{{ route('frontend.example1', $bookItem->id) }}" class="text-decoration-none text-dark">
+                    <a href="{{ route('frontend.example1', $book->id) }}" class="text-decoration-none text-dark">
                         <div class="book-item text-center position-relative">
-                            @if($bookItem->cover_image)
-                                <img src="{{ Storage::url('books/images/' . $bookItem->cover_image) }}" alt="{{ $bookItem->title }}" class="mb-3">
-                                <h5>{{ $bookItem->title }}</h5>
-                                <button class="btn btn-outline-dark mt-2">Read Now</button>
-                                <div class="description-overlay">
-                                    <p>{{ $bookItem->description }}</p>
-                                </div>
+                            @if($book->cover_image)
+                                <img src="{{ Storage::url('books/images/' . $book->cover_image) }}" alt="{{ $book->title }}" class="book-image mb-3">
                             @else
-                                <div style="background-color: #ddd; width: 100%; height: 100%;">
-                                    <p>No image available</p>
-                                </div>
+                                <img src="https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg"
+                                     class="book-image mb-3"
+                                     alt="No image available">
                             @endif
+                            <h5>{{ $book->title }}</h5>
+                            <button class="btn btn-outline-dark mt-2">Read Now</button>
+                            <div class="description-overlay">
+                                <p>{{ Str::limit($book->description, 150) }}</p>
+                            </div>
                         </div>
                     </a>
                 </div>
@@ -716,12 +714,24 @@
 </script>
 
 <script>
-    // Tambahkan event listener pada input pencarian buku
+    // Ambil referensi ke input pencarian dan item buku
     const searchBookInput = document.getElementById('searchBook');
     const bookItems = document.querySelectorAll('.book-item');
     const bookContainer = document.querySelector('.row.row-cols-2.row-cols-md-3.row-cols-lg-6.g-4');
 
-    searchBookInput.addEventListener('input', function() {
+    // Fungsi untuk menampilkan buku berdasarkan hasil pencarian
+    function showBooks(filteredBooks) {
+        // Kosongkan kontainer buku
+        bookContainer.innerHTML = '';
+
+        // Tambahkan buku yang difilter kembali ke kontainer
+        filteredBooks.forEach(bookItem => {
+            bookContainer.appendChild(bookItem.parentElement); // Append the parent <a> element
+        });
+    }
+
+    // Fungsi untuk memfilter buku berdasarkan kueri pencarian
+    function filterBooks() {
         const searchQuery = searchBookInput.value.toLowerCase();
         const filteredBooks = [];
 
@@ -732,14 +742,16 @@
             }
         });
 
-        // Hapus semua buku yang ada di container
-        bookContainer.innerHTML = '';
+        // Jika tidak ada buku yang ditemukan, tampilkan pesan
+        if (filteredBooks.length === 0) {
+            bookContainer.innerHTML = '<p class="text-center">Buku tidak ditemukan.</p>';
+        } else {
+            showBooks(filteredBooks);
+        }
+    }
 
-        // Tambahkan buku-buku yang sesuai dengan pencarian ke container
-        filteredBooks.forEach(bookItem => {
-            bookContainer.appendChild(bookItem);
-        });
-    });
+    // Tambahkan event listener untuk input pencarian
+    searchBookInput.addEventListener('input', filterBooks);
 </script>
 
 

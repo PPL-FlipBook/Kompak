@@ -10,6 +10,19 @@
                 </ol>
                 <h6 class="font-weight-bolder text-white mb-0">Dashboard</h6>
             </nav>
+            @if(session('success'))
+                <div class="alert alert-success">
+                    <i class="ni ni-like-2"></i>
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    <i class="ni ni-bell-55"></i>
+                    {{ session('error') }}
+                </div>
+            @endif
         </div>
     </nav>
     <div class="container-fluid py-4">
@@ -207,17 +220,6 @@
                             </button>
                         </div>
                     </div>
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="alert alert-danger">
-                            {{ session('error') }}
-                        </div>
-                    @endif
                     <div class="table-responsive">
                         <table class="table align-items-center">
                             <thead>

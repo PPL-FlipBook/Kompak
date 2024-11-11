@@ -30,12 +30,14 @@ use Illuminate\Support\Facades\File;
 
 /*Route User*/
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+Route::middleware(['auth', 'role:super admin'])->group(function () {
     Route::get('/create', [DashboardController::class, 'create'])->name('user.create');
     Route::post('/prosesCreate', [DashboardController::class, 'prosesCreate'])->name('user.prosesCreate');
     Route::get('/edit/{id}', [DashboardController::class, 'edit'])->name('user.edit');
     Route::post('/update/{id}', [DashboardController::class, 'update'])->name('user.update');
     Route::delete('/destroy/{id}', [DashboardController::class, 'destroy'])->name('user.destroy');
-
+});
 /*auth login*/
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('auth.index');
@@ -52,14 +54,15 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/Logout',[AuthController::class, 'Logout'])->name('auth.logout');
 
-/*Route Book*/
-Route::get('/books', [BookController::class, 'index'])->name('books.index');
-Route::post('/books', [BookController::class, 'store'])->name('books.store');
-Route::get('/books/{id}/edit', [BookController::class, 'edit'])->name('books.edit');
-Route::put('/books/{id}', [BookController::class, 'update'])->name('books.update');
-Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('books.destroy');
-Route::get('/books/{id}',[BookController::class,'flipbook'])->name('books.show');
-
+/* Route Book */
+Route::middleware(['auth:user', /*'role:admin'*/])->group(function () {
+    Route::get('/books', [BookController::class, 'index'])->name('books.index');
+    Route::post('/books', [BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{id}/edit', [BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{id}', [BookController::class, 'update'])->name('books.update');
+    Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('books.destroy');
+    Route::get('/books/{id}', [BookController::class, 'flipbook'])->name('books.show');
+});
 
 /*Route Frontend*/
 Route::get('/', [FlipbookController::class, 'index'])->name('frontend.index');
@@ -81,13 +84,16 @@ Route::get('/flipbook/{id}',[BookController::class,'flipbook'])->name('frontend.
 /*Purchase*/
 Route::middleware(['auth'])->group(function () {
     Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.index');
-    Route::get('/purchases/create/{flipbookId}', [PurchaseController::class, 'create'])->name('purchases.create');
     Route::post('/purchases/store/{flipbookId}', [PurchaseController::class, 'store'])->name('purchases.store');
     Route::get('/purchases/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
     Route::delete('/purchases/{purchase}', [PurchaseController::class, 'destroy'])->name('purchases.destroy');
     Route::put('/purchases/{purchase}/update-status/{status}', [PurchaseController::class, 'updateStatus'])
         ->name('purchases.updateStatus')
         ->middleware('can:admin');
+});
+
+Route::middleware(['auth', 'role:user'])->group(function () {
+    Route::get('/purchases/create/{flipbookId}', [PurchaseController::class, 'create'])->name('purchases.create');
 });
 
 Route::group(['middleware' => 'auth'], function () {

@@ -2,18 +2,42 @@
 
 @section('content')
     <main class="main-content position-relative border-radius-lg">
-        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="false">
-            <div class="container-fluid py-1 px-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
-                        <li class="breadcrumb-item text-sm text-white active" aria-current="page">Buku</li>
-                    </ol>
-                    <h6 class="font-weight-bolder text-white mb-0">Buku</h6>
-                </nav>
-            </div>
-        </nav>
+        <div class="d-flex justify-content-between">
+            <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="false">
+                <div class="container-fluid py-1 px-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
+                            <li class="breadcrumb-item text-sm text-white active" aria-current="page">Buku</li>
+                        </ol>
+                        <h6 class="font-weight-bolder text-white mb-0">Buku</h6>
+                    </nav>
+                </div>
+            </nav>
+            <div class="mt-3 me-4">
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        <i class="ni ni-like-2"></i>
+                        {{ session('success') }}
+                    </div>
+                @endif
 
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        <i class="ni ni-bell-55"></i>
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                    @if(session('delete'))
+                        <div class="alert alert-danger">
+                            <i class="ni ni-bell-55"></i>
+                            {{ session('delete') }}
+                        </div>
+                    @endif
+            </div>
+        </div>
+        @can('admin/superadmin')
         <div class="row m-md-4">
             <div class="col-lg-12 mb-lg-0 mb-4">
                 <div class="card">
@@ -25,14 +49,6 @@
                             </button>
                         </div>
                     </div>
-
-                    @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="alert alert-danger">{{ session('error') }}</div>
-                    @endif
 
                     <div class="table-responsive">
                         <table class="table align-items-center">
@@ -87,7 +103,9 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
+                                        @can('user')
                                         <a href="{{ route('purchases.create', $book->id) }}" class="text-success"><i class="fas fa-shopping-cart"></i></a>
+                                        @endcan
 {{--                                        <a href="{{ route('books.show', $book->id) }}"><i class="fas fa-eye"></i></a>--}}
                                         <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#editBook-{{ $book->id }}">
                                             <i class="fas fa-edit"></i>
@@ -151,6 +169,46 @@
 
             </div>
         </div>
+        @endcan
+
+        <!-- Bagian untuk Menampilkan Buku Khusus User -->
+        @can('user')
+            <div class="container py-4">
+                @if($books->isEmpty())
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Tidak ada buku yang tersedia untuk Anda.
+                    </div>
+                @else
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+                        @foreach($books as $book)
+                            <div class="col">
+                                <div class="card h-100">
+                                    <div class="card-img-wrapper">
+                                        @if($book->cover_image)
+                                            <img src="{{ asset('storage/books/images/' . $book->cover_image) }}"
+                                                 class="card-img-top"
+                                                 alt="{{ $book->title }}">
+                                        @else
+                                            <img src="https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg"
+                                                 class="book-image mb-3"
+                                                 alt="No image available">
+                                        @endif
+                                    </div>
+                                    <div class="card-body p-2 d-flex flex-column justify-content-between">
+                                        <h6 class="card-title text-center text-truncate mb-2">{{ $book->title }}</h6>
+                                        <a href="{{ route('purchases.create', $book->id) }}"
+                                           class="btn btn-sm btn-primary w-100">
+                                            <i class="fas fa-shopping-cart fa-sm me-1"></i> Beli
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @endcan
     </main>
 
     <!-- Modal Tambah Buku -->

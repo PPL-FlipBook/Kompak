@@ -80,9 +80,11 @@
                                 @if($purchase->payment_status == 1)
                                     <a href="{{ route('books.show', $purchase->book->id) }}" class="btn btn-primary btn-sm mb-0">Baca Buku</a>
                                 @else
+                                    @can('user')
                                     <button type="button" class="btn btn-secondary btn-sm mb-0" data-bs-toggle="modal" data-bs-target="#purchaseNotComplete">
                                         Baca Buku
                                     </button>
+                                    @endcan
                                 @endif
                             </div>
                         </div>
@@ -92,7 +94,34 @@
         </div>
     </main>
 
-    @if($purchase->payment_status != 1)
+    @if($purchase->payment_status == 0)
+        <div class="modal fade" id="purchaseNotComplete" tabindex="-1" aria-labelledby="purchaseNotCompleteLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="purchaseNotCompleteLabel">Informasi Pembelian</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="mb-3">
+                            <img src="{{ asset('storage/books/images/' . $purchase->book->cover_image) }}" alt="{{ $purchase->book->title }}" class="img-fluid rounded" style="max-height: 200px;">
+                        </div>
+                        <h5 class="mb-3">{{ $purchase->book->title }}</h5>
+                        <p class="mb-3">{{ $purchase->book->description }}</p>
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Pembelian Anda <strong>ditolak</strong>.
+                            Silakan melakukan pembelian ulang.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{{ route('purchases.create', ['flipbookId' => $purchase->book->id]) }}" class="btn btn-primary">Beli Buku Kembali</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @elseif($purchase->payment_status == -1)
         <div class="modal fade" id="purchaseNotComplete" tabindex="-1" aria-labelledby="purchaseNotCompleteLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -108,7 +137,7 @@
                         <p class="mb-3">{{ $purchase->book->description }}</p>
                         <div class="alert alert-warning">
                             <i class="fas fa-exclamation-triangle me-2"></i>
-                            Maaf, Anda belum dapat membaca buku ini karena status pembelian masih <strong>{{ $purchase->status_text }}</strong>.
+                            Maaf, pembelian Anda masih <strong>dalam proses</strong>.
                             Silakan tunggu hingga status pembelian berubah menjadi "Sukses".
                         </div>
                     </div>

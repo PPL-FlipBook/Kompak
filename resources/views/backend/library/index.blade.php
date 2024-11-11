@@ -56,65 +56,6 @@
 
 @push('styles')
     <style>
-        .card {
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .card-img-wrapper {
-            height: 200px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f8f9fa;
-        }
-
-        .card-img-top {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card-img-placeholder {
-            width: 100%;
-            height: 100%;
-            background-color: #f8f9fa;
-            color: #adb5bd;
-        }
-
-        .card-title {
-            font-size: 0.9rem;
-            line-height: 1.2;
-            height: 2.4rem;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-
-        .btn-sm {
-            font-size: 0.8rem;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .container {
-            max-width: 1200px;
-        }
-
-        @media (max-width: 767.98px) {
-            .row-cols-md-3 {
-                --bs-gutter-x: 0.5rem;
-            }
-            .card-img-wrapper {
-                height: 150px;
-            }
-        }
     </style>
 @endpush

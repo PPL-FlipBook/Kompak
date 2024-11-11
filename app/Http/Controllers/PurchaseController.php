@@ -20,8 +20,20 @@ class PurchaseController extends Controller
     // Menampilkan daftar pembelian pengguna yang sedang login
     public function index()
     {
-        $purchases = Purchase::where('user_id', Auth::id())->get();
-        $freeBooks = Book::where('price', 0)->get(); // Tambahkan ini
+        $user = Auth::user();
+
+        // Jika pengguna adalah admin, ambil semua pembelian
+        if ($user->role === 'admin') {
+            $purchases = Purchase::with('book')->get();
+        } elseif ($user->role === 'user') {
+            // Jika pengguna adalah user, ambil hanya pembelian mereka
+            $purchases = Purchase::where('user_id', $user->id)->get();
+        } else {
+            // Jika role tidak dikenali, bisa redirect atau abort
+            return redirect()->route('dashboard.index')->with('error', 'Akses tidak diizinkan.');
+        }
+
+        $freeBooks = Book::where('price', 0)->get();
 
         return view('backend.purchases.index', compact('purchases', 'freeBooks'));
     }
@@ -104,25 +116,23 @@ class PurchaseController extends Controller
     {
         session(['url.intended' => url()->previous()]);
 
-        // Pastikan hanya pemilik yang dapat melihat pembelian ini
-        if (auth()->id() !== $purchase->user_id) {
-            abort(403, 'Unauthorized action.');
+        // Cek apakah pengguna adalah admin atau pemilik pembelian
+        if (auth()->user()->isAdmin() || auth()->id() === $purchase->user_id) {
+            $book = $purchase->book;
+
+            // Jika buku sudah dibeli tapi status belum sukses
+            if ($purchase->payment_status != 1) {
+                return view('backend.purchases.show', compact('book', 'purchase'));
+            }
+
+            // Jika buku sudah dibeli dan status sukses
+            if ($purchase->payment_status == 1) {
+                return view('backend.purchases.show', compact('purchase'));
+            }
         }
 
-        $book = $purchase->book;
-
-        // Jika buku sudah dibeli tapi status belum sukses
-        if ($purchase->payment_status != 1) {
-            return view('backend.purchases.show', compact('book', 'purchase'));
-        }
-
-        // Jika buku sudah dibeli dan status sukses
-        if ($purchase->payment_status == 1) {
-            return view('backend.purchases.show', compact('purchase'));
-        }
-
-        // Jika tidak memenuhi kondisi di atas, mungkin redirect ke halaman lain
-        return redirect()->route('purchases.index')->with('error', 'Pembelian tidak valid.');
+        // Jika tidak memenuhi kondisi di atas, abort dengan 403
+        abort(403, 'Unauthorized action.');
     }
 
     // Menghapus pembelian tertentu
@@ -139,8 +149,12 @@ class PurchaseController extends Controller
 
     public function updateStatus(Purchase $purchase, $status)
     {
-        if (!auth()->user()->can('admin')) {
-            abort(403, 'Unauthorized action.');
+        // Pastikan hanya admin yang mengupload buku yang dapat menyetujui
+        $book = $purchase->book;
+
+        // Cek apakah pengguna yang sedang login adalah admin dan pemilik buku
+        if (auth()->user()->role !== 'admin' || auth()->user()->id !== $book->user_id) {
+            abort(403, 'Unauthorized action. Anda tidak memiliki izin untuk menyetujui pembelian ini.');
         }
 
         // Validasi status
@@ -154,5 +168,4 @@ class PurchaseController extends Controller
         return redirect()->route('purchases.index')
             ->with('success', 'Status pembelian berhasil diperbarui');
     }
-
 }

@@ -14,7 +14,7 @@
                         <img src="{{ asset('storage/books/images/' . $flipbook->cover_image) }}"
                              class="img-fluid rounded shadow-sm"
                              alt="{{ $flipbook->title }}"
-                             style="max-height: 200px;">
+                             style="max-height: 500px;">
                     @else
                         <div class="placeholder-image bg-secondary bg-opacity-10 rounded d-flex align-items-center justify-content-center" style="height: 200px;">
                             <i class="fas fa-book fa-3x text-muted"></i>

@@ -53,138 +53,140 @@
             @endif
 
             <!-- Section Daftar Pembelian -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card mb-4">
-                        <div class="card-header pb-0 p-3">
-                            <h6 class="mb-0">Daftar Pembelian Anda</h6>
-                        </div>
-                        @if(session('success'))
-                            <div class="alert alert-success mx-3 mt-3">
-                                {{ session('success') }}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mb-4">
+                            <div class="card-header pb-0 p-3">
+                                <h6 class="mb-0">Daftar Pembelian</h6>
                             </div>
-                        @endif
-                        @if(session('error'))
-                            <div class="alert alert-danger mx-3 mt-3">
-                                {{ session('error') }}
-                            </div>
-                        @endif
-                        <div class="card-body px-0 pt-0 pb-2">
-                            <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Judul Buku</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal Pembelian</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Jumlah</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Pembayaran</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status Pembelian</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @forelse($purchases->sortByDesc('purchase_date') as $purchase)
+                            @if(session('success'))
+                                <div class="alert alert -success mx-3 mt-3">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+                            @if(session('error'))
+                                <div class="alert alert-danger mx-3 mt-3">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+                            <div class="card-body px-0 pt-0 pb-2">
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
                                         <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $loop->iteration }}</h6>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Judul Buku</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal Pembelian</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Jumlah</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Pembayaran</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status Pembelian</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @forelse($purchases->sortByDesc('purchase_date') as $purchase)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <h6 class="mb-0 text-sm">{{ $loop->iteration }}</h6>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $purchase->book->title }}</h6>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <h6 class="mb-0 text-sm">{{ $purchase->book->title }}</h6>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $purchase->purchase_date }}</p>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $purchase->quantity }}</p>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($purchase->total_amount, 0, ',', '.') }}</p>
-                                            </td>
-                                            <td>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $purchase->purchase_date }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $purchase->quantity }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($purchase->total_amount, 0, ',', '.') }}</p>
+                                                </td>
+                                                <td>
                                                     <span class="badge badge-sm bg-gradient-{{ $purchase->payment_status == 1 ? 'success' : ($purchase->payment_status == 0 ? 'danger' : 'warning') }}">
                                                         {{ $purchase->status_text }}
                                                     </span>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                @can('admin')
-                                                    @if($purchase->payment_status == 1)
-                                                        <form action="{{ route('purchases.updateStatus', ['purchase' => $purchase->id, 'status' => -1]) }}"
-                                                              method="POST"
-                                                              class="d-inline-block">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <button type="submit" class="btn btn-link p-0 mx-1" title="Ubah Status">
-                                                                <i class="fas fa-sync-alt text-warning"></i>
-                                                            </button>
-                                                        </form>
-                                                    @elseif($purchase->payment_status == -1)
-                                                        <form action="{{ route('purchases.updateStatus', ['purchase' => $purchase->id, 'status' => 1]) }}"
-                                                              method="POST"
-                                                              class="d-inline-block">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <a type="submit" class="btn btn-link p-0 mx-1" data-bs-toggle="modal" data-bs-target="#setujuiPembelian-{{ $purchase->id }}" title="Setujui">
-                                                                <i class="fas fa-check-circle text-success"></i>
-                                                            </a>
-                                                        </form>
-                                                        <form action="{{ route('purchases.updateStatus', ['purchase' => $purchase->id, 'status' => 0]) }}"
-                                                              method="POST"
-                                                              class="d-inline-block">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <a type="submit" class="btn btn-link p-0 mx-1" data-bs-toggle="modal" data-bs-target="#tolakPembelian-{{ $purchase->id }}" title="Tolak">
-                                                                <i class="fas fa-times-circle text-danger"></i>
-                                                            </a>
-                                                        </form>
+                                                </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    @can('admin')
+                                                        @if($purchase->payment_status == 1)
+                                                            <form action="{{ route('purchases.updateStatus', ['purchase' => $purchase->id, 'status' => -1]) }}"
+                                                                  method="POST"
+                                                                  class="d-inline-block">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <button type="submit" class="btn btn-link p-0 mx-1" title="Ubah Status">
+                                                                    <i class="fas fa-sync-alt text-warning"></i>
+                                                                </button>
+                                                            </form>
+                                                        @elseif($purchase->payment_status == -1)
+                                                            @if(auth()->user()->id === $purchase->book->user_id) <!-- Cek apakah admin yang mengupload -->
+                                                            <form action="{{ route('purchases.updateStatus', ['purchase' => $purchase->id, 'status' => 1]) }}"
+                                                                  method="POST"
+                                                                  class="d-inline-block">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <a type="submit" class="btn btn-link p-0 mx-1" data-bs-toggle="modal" data-bs-target="#setujuiPembelian-{{ $purchase->id }}" title="Setujui">
+                                                                    <i class="fas fa-check-circle text-success"></i>
+                                                                </a>
+                                                            </form>
+                                                            <form action="{{ route('purchases.updateStatus', ['purchase' => $purchase->id, 'status' => 0]) }}"
+                                                                  method="POST"
+                                                                  class="d-inline-block">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <a type="submit" class="btn btn-link p-0 mx-1" data-bs-toggle="modal" data-bs-target="#tolakPembelian-{{ $purchase->id }}" title="Tolak">
+                                                                    <i class="fas fa-times-circle text-danger"></i>
+                                                                </a>
+                                                            </form>
+                                                            @endif
+                                                        @endif
+                                                    @endcan
+
+                                                    <a href="{{ route('purchases.show', $purchase->id) }}"
+                                                       class="btn btn-link p-0 mx-1"
+                                                       title="Lihat Detail">
+                                                        <i class="fas fa-eye text-primary"></i>
+                                                    </a>
+
+                                                    @if($purchase->payment_status == -1 || $purchase->payment_status == 0)
+                                                        <a href="#"
+                                                           class="btn btn-link p-0 mx-1"
+                                                           data-bs-toggle="modal"
+                                                           data-bs-target="#hapusPembelian-{{ $purchase->id }}"
+                                                           title="Hapus">
+                                                            <i class="fas fa-trash text-danger"></i>
+                                                        </a>
                                                     @endif
-                                                @endcan
 
-                                                <a href="{{ route('purchases.show', $purchase->id) }}"
-                                                   class="btn btn-link p-0 mx-1"
-                                                   title="Lihat Detail">
-                                                    <i class="fas fa-eye text-primary"></i>
-                                                </a>
-
-                                                @if($purchase->payment_status == -1 || $purchase->payment_status == 0)
-                                                    <a href="#"
-                                                       class="btn btn-link p-0 mx-1"
-                                                       data-bs-toggle="modal"
-                                                       data-bs-target="#hapusPembelian-{{ $purchase->id }}"
-                                                       title="Hapus">
-                                                        <i class="fas fa-trash text-danger"></i>
-                                                    </a>
-                                                @endif
-
-                                                @if($purchase->payment_status == 1)
-                                                    <a href="{{ route('frontend.example1', $purchase->book->id) }}"
-                                                       class="btn btn-link p-0 mx-1"
-                                                       title="Baca Buku">
-                                                        <i class="fas fa-book-reader text-success"></i>
-                                                    </a>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="7" class="text-center">Tidak ada data pembelian</td>
-                                        </tr>
-                                    @endforelse
-                                    </tbody>
-                                </table>
+                                                    @if($purchase->payment_status == 1)
+                                                        <a href="{{ route('frontend.example1', $purchase->book->id) }}"
+                                                           class="btn btn-link p-0 mx-1"
+                                                           title="Baca Buku">
+                                                            <i class="fas fa-book-reader text-success"></i>
+                                                        </a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center">Tidak ada data pembelian</td>
+                                            </tr>
+                                        @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
             <!-- Modal-modal -->
             @foreach($purchases as $purchase)
@@ -286,16 +288,16 @@
                 text-overflow: ellipsis;
             }
         </style>
-        @push('scripts')
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    var myModals = [].slice.call(document.querySelectorAll('.modal'))
-                    myModals.forEach(function(modalEl) {
-                        new bootstrap.Modal(modalEl)
-                    })
+    @endpush
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var myModals = [].slice.call(document.querySelectorAll('.modal'))
+                myModals.forEach(function(modalEl) {
+                    new bootstrap.Modal(modalEl)
                 })
-            </script>
-        @endpush
+            })
+        </script>
     @endpush
 @endsection
-

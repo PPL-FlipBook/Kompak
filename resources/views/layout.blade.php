@@ -7,6 +7,77 @@
   <link rel="apple-touch-icon" sizes="76x76" href="{{asset('assets/img/apple-icon.png')}}">
   <link rel="icon" type="image/jpg" href="{{asset('assets/img/icon-flipbook.jpg')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .book-image {
+            width: 100%; /* Mengatur lebar gambar agar sesuai dengan kolom */
+            height: 100%; /* Mengatur tinggi gambar agar sesuai dengan wrapper */
+            object-fit: cover; /* Memastikan gambar mengisi area dengan baik */
+        }
+
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .card-img-wrapper {
+            height: 200px; /* Atur tinggi gambar */
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa; /* Warna latar belakang untuk gambar */
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Pastikan gambar mengisi area dengan baik */
+        }
+
+        .card-img-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #f8f9fa; /* Warna latar belakang untuk placeholder */
+            color: #adb5bd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            line-height: 1.2;
+            height: 2.4rem; /* Atur tinggi untuk judul */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Batasi jumlah baris judul */
+            -webkit-box-orient: vertical;
+        }
+
+        .btn-sm {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        @media (max-width: 767.98px) {
+            .row-cols-md-3 {
+                --bs-gutter-x: 0.5rem;
+            }
+            .card-img-wrapper {
+                height: 150px; /* Atur tinggi gambar untuk layar kecil */
+            }
+        }
+    </style>
   <title>
     FlipBook Dashboard
   </title>

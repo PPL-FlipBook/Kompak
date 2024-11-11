@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AdminMiddleware
+class superAdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,9 +17,9 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->role === 'Admin'){
+        if (Auth::check() && Auth::user()->role === 'super admin') {
             return $next($request);
         }
-        return abort( 403, "Anda tidak mempunyai akses disini");
+        return abort(403, "Anda tidak mempunyai akses disini");
     }
 }
