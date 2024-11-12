@@ -6,9 +6,13 @@
     <h2 class="text-2xl font-bold text-center mb-6">Registration</h2>
     <form action="{{ route('register.index') }}" method="POST">
         @csrf
-        <div class="flex items-center justify-center">
+        <div class="text-sm text-gray-500 text-center mb-4">
             @if (session('pesan'))
-                <span class="inline-block bg-{{ session('pesan')[0] }}-100 text-{{ session('pesan')[0] }}-700 px-4 py-2 rounded text-center">{{ session('pesan')[1] }}</span>
+                <span class="inline-block bg-{{ session('pesan')[0] }}-100 text-{{ session('pesan')[0] }}-700 rounded text-center">{{ session('pesan')[1] }}</span>
+            @else
+                <div class="text-sm text-gray-500 text-center mb-4">
+                    <span>Gunakan email pribadi, bukan email institusi.</span>
+                </div>
             @endif
         </div>
         <div class="mb-4 relative">
@@ -29,19 +33,29 @@
         </div>
         <div class="mb-4 relative">
             <span class="absolute left-3 top-3">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 text-gray-400">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+                <!-- Ikon Kunci menggunakan SVG -->
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 text-gray-400">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                 </svg>
             </span>
-            <input type="password" name="password" placeholder="Password" class="auth-input" required>
-        </div>
+            <input type="password" id="password" name="password" placeholder="Password" class="auth-input" required>
+            <span class="absolute right-3 top-3 cursor-pointer" onclick="togglePasswordVisibility('password')">
+        <!-- Ikon Mata dari Bootstrap -->
+                <i class="bi bi-eye-slash text-gray-400" id="eye-icon-password"></i>
+            </span>
+       </div>
         <div class="mb-4 relative">
             <span class="absolute left-3 top-3">
+                <!-- Ikon Kunci menggunakan SVG -->
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 text-gray-400">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
             </span>
-            <input type="password" name="password_confirmation" placeholder="Confirm Password" class="auth-input" required>
+                <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password" class="auth-input" required>
+            <span class="absolute right-3 top-3 cursor-pointer" onclick="togglePasswordVisibility('password_confirmation')">
+                <!-- Ikon Mata dari Bootstrap -->
+                <i class="bi bi-eye-slash text-gray-400" id="eye-icon-confirmation"></i>
+            </span>
         </div>
         <button type="submit" class="auth-button mb-4">Register</button>
     </form>
@@ -74,4 +88,21 @@
         <span class="text-sm text-gray-500">Already have an account? </span>
         <a href="{{ route('auth.verify') }}" class="auth-link">Login</a>
     </div>
+
+    <script>
+        function togglePasswordVisibility(id) {
+            var passwordInput = document.getElementById(id);
+            var eyeIcon = id === 'password' ? document.getElementById('eye-icon-password') : document.getElementById('eye-icon-confirmation');
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove('bi-eye-slash');
+                eyeIcon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove('bi-eye');
+                eyeIcon.classList.add('bi-eye-slash');
+            }
+        }
+    </script>
 @endsection

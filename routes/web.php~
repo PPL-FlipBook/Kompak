@@ -30,7 +30,8 @@ use Illuminate\Support\Facades\File;
 
 /*Route User*/
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-Route::middleware('auth, role:super admin')->group(function () {
+
+Route::middleware(['auth', 'role:super admin'])->group(function () {
     Route::get('/create', [DashboardController::class, 'create'])->name('user.create');
     Route::post('/prosesCreate', [DashboardController::class, 'prosesCreate'])->name('user.prosesCreate');
     Route::get('/edit/{id}', [DashboardController::class, 'edit'])->name('user.edit');

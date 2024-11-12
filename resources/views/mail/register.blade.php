@@ -133,7 +133,7 @@
 </head>
 <body>
 <div class="container">
-    <img src="https://via.placeholder.com/150x150.png?text=Your+Logo" alt="Logo" class="logo">
+    <img src="https://laboratoriumpif.wordpress.com/wp-content/uploads/2018/03/flipbook.jpg" class="logo" alt="logo">
     <h1>Selamat Datang, <span class="highlight">{{$user->name}}</span>!</h1>
     <p>Terima kasih telah bergabung dengan kami! Akun Anda telah berhasil dibuat dan Anda hanya selangkah lagi untuk memulai petualangan luar biasa bersama kami.</p>
 

@@ -101,7 +101,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/library/{id}', [LibraryController::class, 'show'])->name('library.show');
 });
 
-Route::resource('sales-information', SalesInformationController::class);
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('sales-information', SalesInformationController::class);
+});
 
 /*Route Storage*/
 Route::get('storage/book{filename}', function ($filename) {

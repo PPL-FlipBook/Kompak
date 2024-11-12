@@ -27,101 +27,111 @@
     </nav>
     <div class="container-fluid py-4">
         <div class="row">
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Jumlah Buku</p>
-                                    <h5 class="font-weight-bolder">
-                                        53
-                                    </h5>
-                                    <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">+55</span>
-                                        since last week
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                                    <i class="ni ni-book-bookmark text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Jumlah Pengguna</p>
-                                    <h5 class="font-weight-bolder">
-                                        {{ $totalUsers }} <!-- Menampilkan total pengguna -->
-                                    </h5>
-                                    <p class="mb-0">
-                            <span class="text-success text-sm font-weight-bolder">
-                                {{ $change > 0 ? '+' . $change : $change }} <!-- Menampilkan perubahan jumlah pengguna -->
-                            </span>
-                                        since last week
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
-                                    <i class="ni ni-single-02 text-lg opacity-10" aria-hidden="true"></i>
+            @can('admin')
+            <div class="container-fluid py-4">
+                <div class="row">
+                    <!-- Books Section -->
+                    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Jumlah Buku</p>
+                                            <h5 class="font-weight-bolder">
+                                                {{ $totalBooks }} <!-- Total number of books -->
+                                            </h5>
+                                            <p class="mb-0">
+                                    <span class="text-success text-sm font-weight-bolder">
+                                        {{ $changeBooks > 0 ? '+' . $changeBooks : $changeBooks }} <!-- Change in number of books since last week -->
+                                    </span>
+                                                since last week
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                                            <i class="ni ni-book-bookmark text-lg opacity-10" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Jumlah Pembelian</p>
-                                    <h5 class="font-weight-bolder">
-                                        3
-                                    </h5>
-                                    <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">+2</span>
-                                        since last week
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
-                                    <i class="ni ni-credit-card text-lg opacity-10" aria-hidden="true"></i>
+
+                    <!-- Users Section -->
+                    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Jumlah Pengguna</p>
+                                            <h5 class="font-weight-bolder">
+                                                {{ $totalUsers }} <!-- Total number of users -->
+                                            </h5>
+                                            <p class="mb-0">
+                                    <span class="text-success text-sm font-weight-bolder">
+                                        {{ $changeUsers > 0 ? '+' . $changeUsers : $changeUsers }} <!-- Change in number of users since last week -->
+                                    </span>
+                                                since last week
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
+                                            <i class="ni ni-single-02 text-lg opacity-10" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Buku Terbaca</p>
-                                    <h5 class="font-weight-bolder">
-                                        103
-                                    </h5>
-                                    <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">+5</span> since last week
-                                    </p>
+                    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Jumlah Pembelian</p>
+                                            <h5 class="font-weight-bolder">
+                                                3
+                                            </h5>
+                                            <p class="mb-0">
+                                                <span class="text-success text-sm font-weight-bolder">+2</span>
+                                                since last week
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+                                            <i class="ni ni-credit-card text-lg opacity-10" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
-                                    <i class="ni ni-books text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Buku Terbaca</p>
+                                            <h5 class="font-weight-bolder">
+                                                103
+                                            </h5>
+                                            <p class="mb-0">
+                                                <span class="text-success text-sm font-weight-bolder">+5</span> since last week
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                                            <i class="ni ni-books text-lg opacity-10" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -419,7 +429,7 @@
                     </div>
                 </div>
             @endforeach
-
+            @endcan
             <div class="col-lg-5">
                 <div class="card">
                     <div class="card-header pb-0 p-3">
@@ -448,9 +458,9 @@
                                     </div>
                                 </div>
                                 <div class="d-flex">
-                                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto">
+                                    <a href="{{ route('books.index') }}" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto">
                                         <i class="ni ni-bold-right" aria-hidden="true"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </li>
                             <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">

@@ -61,6 +61,17 @@ class AuthController extends Controller
             'password' => 'required',
         ], $messages);
 
+        // Daftar domain email yang dianggap sebagai email perusahaan atau komunitas
+        $companyDomains = ['@mail.ukrim.ac.id'];
+
+        // Ambil domain dari email
+        $emailDomain = substr(strrchr($request->email, "@"), 1);
+
+        // Cek apakah domain ada dalam daftar
+        if (in_array($emailDomain, $companyDomains)) {
+            return back()->with('pesan', ['danger', 'Gunakan email pribadi, bukan email perusahaan atau komunitas.']);
+        }
+
         $user = User::where('email', $request->email)->first();
         if ($user) {
             return back()->with('pesan', ['danger', 'Email sudah terdaftar.']);
@@ -115,11 +126,11 @@ class AuthController extends Controller
         }
     }
 
-    public function showResetPasswordForm($token)
+    public function showResetPasswordForm($token, Request $request)
     {
-        return view('auth.reset_password_confirmation', ['token' => $token]);
+        $email = $request->email;
+        return view('auth.reset_password_confirmation', ['token' => $token, 'email' => $email]);
     }
-
     public function updatePassword(Request $request)
     {
         $request->validate([

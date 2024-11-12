@@ -1,196 +1,191 @@
-<div class="card shadow-sm border-0 rounded-3">
-    <div class="card-header bg-primary text-white py-3">
-        <h4 class="mb-0">
-            <i class="fas fa-shopping-cart me-2"></i>Detail Pembelian
-        </h4>
-    </div>
-
-    <div class="card-body p-4">
-        <!-- Book Information -->
-        <div class="book-info bg-light p-3 rounded-3 mb-4">
-            <div class="row align-items-start">
-                <div class="col-md-3">
-                    @if($flipbook->cover_image)
-                        <img src="{{ asset('storage/books/images/' . $flipbook->cover_image) }}"
-                             class="img-fluid rounded shadow-sm"
-                             alt="{{ $flipbook->title }}"
-                             style="max-height: 600px;">
-                    @else
-                        <div class="placeholder-image bg-secondary bg-opacity-10 rounded d-flex align-items-center justify-content-center" style="height: 200px;">
-                            <i class="fas fa-book fa-3x text-muted"></i>
+<!-- Book Information -->
+                <div class="book-info bg-light p-3 rounded-3 mb-4">
+                    <div class="row align-items-start">
+                        <div class="col-md-3">
+                            @if($flipbook->cover_image)
+                                <img src="{{ asset('storage/books/images/' . $flipbook->cover_image) }}"
+                                     class="img-fluid rounded shadow-sm"
+                                     alt="{{ $flipbook->title }}"
+                                     style="max-height: 500px;">
+                            @else
+                                <div class="placeholder-image bg-secondary bg-opacity-10 rounded d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <i class="fas fa-book fa-3x text-muted"></i>
+                                </div>
+                            @endif
                         </div>
-                    @endif
-                </div>
-                <div class="col-md-3">
-                    <h5 class="text-primary mb-2">{{ $flipbook->title }}</h5>
-                    <p class="text-muted mb-2">
-                        <i class="fas fa-user me-2"></i>{{ $flipbook->author }}
-                    </p>
-                    <h4 class="text-success mb-3">
-                        <i class="fas fa-tag me-2"></i>Rp {{ number_format($flipbook->price, 0, ',', '.') }}
-                    </h4>
-                </div>
-                <div class="col-md-6">
-                    <div class="description">
-                        <h6 class="text-secondary mb-2">Deskripsi:</h6>
-                        <p class="text-muted">{!! nl2br(e($flipbook->description)) !!}</p>
+                        <div class="col-md-3">
+                            <h5 class="text-primary mb-2">{{ $flipbook->title }}</h5>
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-user me-2"></i>{{ $flipbook->author }}
+                            </p>
+                            <h4 class="text-success mb-3">
+                                <i class="fas fa-tag me-2"></i>Rp {{ number_format($flipbook->price, 0, ',', '.') }}
+                            </h4>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="description">
+                                <h6 class="text-secondary mb-2">Deskripsi:</h6>
+                                <p class="text-muted">{!! nl2br(e($flipbook->description)) !!}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Purchase Form -->
+                <form action="{{ route('purchases.store', $flipbook->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+
+                    <!-- Quantity -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-shopping-basket me-2"></i>Jumlah Pembelian
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control bg-light" value="1" readonly>
+                            <input type="hidden" name="quantity" value="1">
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-credit-card me-2"></i>Informasi Pembayaran
+                        </label>
+                        <div class="payment-methods row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                            <!-- Bank BRI -->
+                            @if($salesInfo && $salesInfo->bank_bri)
+                                <div class="col">
+                                    <div class="payment-item alert alert-info h-100 mb-0">
+                                        <h6 class="fw-bold"><i class="fas fa-university me-2"></i>Bank BRI</h6>
+                                        <div class="payment-details">
+                                            <p class="mb-1">Nomor Rekening: {{ $salesInfo->bank_bri }}</p>
+                                            <p class="mb-0">Atas Nama: {{ $salesInfo->bank_bri_name ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+
+                            <!-- Bank BCA -->
+                            @if($salesInfo && $salesInfo->bank_bca)
+                                <div class="col">
+                                    <div class="payment-item alert alert-info h-100 mb-0">
+                                        <h6 class="fw-bold"><i class="fas fa-university me-2"></i>Bank BCA</h6>
+                                        <div class="payment-details">
+                                            <p class="mb-1">Nomor Rekening: {{ $salesInfo->bank_bca }}</p>
+                                            <p class="mb-0">Atas Nama: {{ $salesInfo->bank_bca_name ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Bank Mandiri -->
+                            @if($salesInfo && $salesInfo->bank_mandiri)
+                                <div class="col">
+                                    <div class="payment-item alert alert-info h-100 mb-0">
+                                        <h6 class="fw-bold"><i class="fas fa-university me-2"></i>Bank Mandiri</h6>
+                                        <div class="payment-details">
+                                            <p class="mb-1">Nomor Rekening: {{ $salesInfo->bank_mandiri }}</p>
+                                            <p class="mb-0">Atas Nama: {{ $salesInfo->bank_mandiri_name ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- DANA -->
+                            @if($salesInfo && $salesInfo->dana)
+                                <div class="col">
+                                    <div class="payment-item alert alert-info h-100 mb-0">
+                                        <h6 class="fw-bold"><i class="fas fa-wallet me-2"></i>DANA</h6>
+                                        <div class="payment-details">
+                                            <p class="mb-1">Nomor: {{ $salesInfo->dana }}</p>
+                                            <p class="mb-0">Atas Nama: {{ $salesInfo->dana_name ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- OVO -->
+                            @if($salesInfo && $salesInfo->ovo)
+                                <div class="col">
+                                    <div class="payment-item alert alert-info h-100 mb-0">
+                                        <h6 class="fw-bold"><i class="fas fa-wallet me-2"></i>OVO</h6>
+                                        <div class="payment-details">
+                                            <p class="mb-1">Nomor: {{ $salesInfo->ovo }}</p>
+                                            <p class="mb-0">Atas Nama: {{ $salesInfo->ovo_name ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- GoPay -->
+                            @if($salesInfo && $salesInfo->gopay)
+                                <div class="col">
+                                    <div class="payment-item alert alert-info h-100 mb-0">
+                                        <h6 class="fw-bold"><i class="fas fa-wallet me-2"></i>GoPay</h6>
+                                        <div class="payment-details">
+                                            <p class="mb-1">Nomor: {{ $salesInfo->gopay }}</p>
+                                            <p class="mb-0">Atas Nama: {{ $salesInfo->gopay_name ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        <small class="text-muted mt-3 d-block">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Silahkan transfer sesuai dengan nominal pembelian yaitu <strong>Rp {{ number_format($flipbook->price, 0, ',', '.') }}</strong> ke salah satu rekening di atas
+                        </small>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-credit-card me-2"></i>Metode Pembayaran
+                        </label>
+                        <select name="payment_method" class="form-select" required>
+                            <option value="">Pilih metode pembayaran</option>
+                            <option value="Bank BRI">Bank BRI</option>
+                            <option value="Bank BCA">Bank BCA</option>
+                            <option value="Bank Mandiri">Bank Mandiri</option>
+                            <option value="DANA">DANA</option>
+                            <option value="OVO">OVO</option>
+                            <option value="GoPay">GoPay</option>
+                        </select>
+                        <small class="text-muted mt-3 d-block">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Silahkan pilih metode pembayaran yang sesuai
+                        </small>
+                    </div>
+
+                    <!-- Payment Proof -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-file-image me-2"></i>Bukti Pembayaran
+                        </label>
+                        <input type="file" name="payment_proof"
+                               class="form-control @error('payment_proof') is-invalid @enderror"
+                               accept="image/*">
+                        @error('payment_proof')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted mt-2 d-block">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Format yang diterima: JPG, JPEG, PNG (Maksimal 2MB)
+                        </small>
+                        <div id="payment_proof_preview" class="mt-2"></div>
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="d-flex justify-content-start">
+                        <a href="{{ route('books.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Kembali
+                        </a>
+                        <button type="submit" class="btn btn-primary  ms-2">
+                            <i class="fas fa-shopping-cart me-2"></i>Beli Sekarang
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <!-- Purchase Form -->
-        <form action="{{ route('purchases.store', $flipbook->id) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-
-            <!-- Quantity -->
-            <div class="mb-4">
-                <label class="form-label fw-bold">
-                    <i class="fas fa-shopping-basket me-2"></i>Jumlah Pembelian
-                </label>
-                <div class="input-group">
-                    <input type="number" class="form-control bg-light" value="1" readonly>
-                    <input type="hidden" name="quantity" value="1">
-                </div>
-            </div>
-
-            <!-- Payment Method -->
-            <div class="mb-4">
-                <label class="form-label fw-bold">
-                    <i class="fas fa-credit-card me-2"></i>Informasi Pembayaran
-                </label>
-                <div class="payment-methods row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-                    <!-- Bank BRI -->
-                    @if($salesInfo->bank_bri)
-                        <div class="col">
-                            <div class="payment-item alert alert-info h-100 mb-0">
-                                <h6 class="fw-bold"><i class="fas fa-university me-2"></i>Bank BRI</h6>
-                                <div class="payment-details">
-                                    <p class="mb-1">Nomor Rekening: {{ $salesInfo->bank_bri }}</p>
-                                    <p class="mb-0">Atas Nama: {{ $salesInfo->bank_bri_name ?? '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Bank BCA -->
-                    @if($salesInfo->bank_bca)
-                        <div class="col">
-                            <div class="payment-item alert alert-info h-100 mb-0">
-                                <h6 class="fw-bold"><i class="fas fa-university me-2"></i>Bank BCA</h6>
-                                <div class="payment-details">
-                                    <p class="mb-1">Nomor Rekening: {{ $salesInfo->bank_bca }}</p>
-                                    <p class="mb-0">Atas Nama: {{ $salesInfo->bank_bca_name ?? '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Bank Mandiri -->
-                    @if($salesInfo->bank_mandiri)
-                        <div class="col">
-                            <div class="payment-item alert alert-info h-100 mb-0">
-                                <h6 class="fw-bold"><i class="fas fa-university me-2"></i>Bank Mandiri</h6>
-                                <div class="payment-details">
-                                    <p class="mb-1">Nomor Rekening: {{ $salesInfo->bank_mandiri }}</p>
-                                    <p class="mb-0">Atas Nama: {{ $salesInfo->bank_mandiri_name ?? '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- DANA -->
-                    @if($salesInfo->dana)
-                        <div class="col">
-                            <div class="payment-item alert alert-info h-100 mb-0">
-                                <h6 class="fw-bold"><i class="fas fa-wallet me-2"></i>DANA</h6>
-                                <div class="payment-details">
-                                    <p class="mb-1">Nomor: {{ $salesInfo->dana }}</p>
-                                    <p class="mb-0">Atas Nama: {{ $salesInfo->dana_name ?? '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- OVO -->
-                    @if($salesInfo->ovo)
-                        <div class="col">
-                            <div class="payment-item alert alert-info h-100 mb-0">
-                                <h6 class="fw-bold"><i class="fas fa-wallet me-2"></i>OVO</h6>
-                                <div class="payment-details">
-                                    <p class="mb-1">Nomor: {{ $salesInfo->ovo }}</p>
-                                    <p class="mb-0">Atas Nama: {{ $salesInfo->ovo_name ?? '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- GoPay -->
-                    @if($salesInfo->gopay)
-                        <div class="col">
-                            <div class="payment-item alert alert-info h-100 mb-0">
-                                <h6 class="fw-bold"><i class="fas fa-wallet me-2"></i>GoPay</h6>
-                                <div class="payment-details">
-                                    <p class="mb-1">Nomor: {{ $salesInfo->gopay }}</p>
-                                    <p class="mb-0">Atas Nama: {{ $salesInfo->gopay_name ?? '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-                <small class="text-muted mt-3 d-block">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Silahkan transfer sesuai dengan nominal pembelian yaitu <strong>Rp {{ number_format($flipbook->price, 0, ',', '.') }}</strong> ke salah satu rekening di atas
-                </small>
-            </div>
-
-            <!-- Payment Method -->
-            <div class="mb-4">
-                <label class="form-label fw-bold">
-                    <i class="fas fa-credit-card me-2"></i>Metode Pembayaran
-                </label>
-                <select name="payment_method" class="form-select" required>
-                    <option value="">Pilih metode pembayaran</option>
-                    <option value="Bank BRI">Bank BRI</option>
-                    <option value="Bank BCA">Bank BCA</option>
-                    <option value="Bank Mandiri">Bank Mandiri</option>
-                    <option value="DANA">DANA</option>
-                    <option value="OVO">OVO</option>
-                    <option value="GoPay">GoPay</option>
-                </select>
-                <small class="text-muted mt-3 d-block">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Silahkan pilih metode pembayaran yang sesuai
-                </small>
-            </div>
-
-            <!-- Payment Proof -->
-            <div class="mb-4">
-                <label class="form-label fw-bold">
-                    <i class="fas fa-file-image me-2"></i>Bukti Pembayaran
-                </label>
-                <input type="file" name="payment_proof"
-                       class="form-control @error('payment_proof') is-invalid @enderror"
-                       accept="image/*">
-                @error('payment_proof')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-                <small class="text-muted mt-2 d-block">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Format yang diterima: JPG, JPEG, PNG (Maksimal 2MB)
-                </small>
-                <div id="payment_proof_preview" class="mt-2"></div>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="fas fa-shopping-cart me-2"></i>Beli Sekarang
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 
 @push('styles')
     <style>

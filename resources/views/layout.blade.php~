@@ -123,7 +123,6 @@
                       <span class="nav-link-text ms-1">Book</span>
                   </a>
               </li>
-              @can('admin')
               <li class="nav-item">
                   <a class="nav-link {{ request()->routeIs('sales-information.index') ? 'active' : '' }}" href="{{ route('sales-information.index') }}">
                       <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -132,7 +131,6 @@
                       <span class="nav-link-text ms-1">Sales Information</span>
                   </a>
               </li>
-              @endcan
               <li class="nav-item">
                   <a class="nav-link {{ request()->routeIs('dashboard.billing') ? 'active' : '' }}" href="{{ route('dashboard.billing') }}">
                       <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">

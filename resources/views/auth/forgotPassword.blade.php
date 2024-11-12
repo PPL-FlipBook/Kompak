@@ -6,9 +6,9 @@
     <h2 class="text-2xl font-bold text-center mb-6">Forgot Password</h2>
     <form action="{{ route('password.email') }}" method="POST">
         @csrf
-        <div class="flex items-center justify-center">
+        <div class="text-sm text-gray-500 text-center mb-4">
             @if (session('pesan'))
-                <span class="inline-block bg-{{ session('pesan')[0] }}-100 text-{{ session('pesan')[0] }}-700 px-4 py-2 rounded text-center">{{ session('pesan')[1] }}</span>
+                <span class="inline-block bg-{{ session('pesan')[0] }}-100 text-{{ session('pesan')[0] }}-700 rounded text-center">{{ session('pesan')[1] }}</span>
             @endif
         </div>
         <div class="mb-4 relative">

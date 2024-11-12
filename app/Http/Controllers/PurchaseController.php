@@ -63,6 +63,11 @@ class PurchaseController extends Controller
         $book = Book::findOrFail($flipbookId);
         $salesInfo = SalesInformation::first();
 
+        // Check if sales information exists
+        if (!$salesInfo) {
+            return redirect()->route('frontend.example1')->with('error', 'Sales information is not available.');
+        }
+
         // Handle payment proof upload
         $paymentProofPath = null;
         if ($request->hasFile('payment_proof')) {
@@ -91,6 +96,8 @@ class PurchaseController extends Controller
             case 'GoPay':
                 $paymentAccount = $salesInfo->gopay;
                 break;
+            default:
+                return back()->withErrors(['payment_method' => 'Metode pembayaran tidak valid.']);
         }
 
         // Create purchase

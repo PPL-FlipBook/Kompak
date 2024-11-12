@@ -1,100 +1,111 @@
 @extends('layout')
 
 @section('content')
-    <div class="container mt-4">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informasi Penjualan</h4>
-            </div>
-            <div class="card-body">
-                @if($salesInfo)
-                    <!-- Informasi Kontak -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">
-                                <i class="fas fa-address-card text-primary me-2"></i>Informasi Kontak
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="info-item d-flex align-items-center p-3 border rounded mb-3">
-                                        <div class="icon-wrapper me-3">
-                                            <i class="fas fa-envelope fa-lg text-primary"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <div class="text-muted small">Email</div>
-                                            <div class="fw-bold">{{ $salesInfo->email }}</div>
+    <main class="main-content position-relative border-radius-lg">
+        <div class="d-flex justify-content-between">
+            <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="false">
+                <div class="container-fluid py-1 px-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
+                            <li class="breadcrumb-item text-sm text-white active" aria-current="page">Informasi</li>
+                        </ol>
+                        <h6 class="font-weight-bolder text-white mb-0">Informasi</h6>
+                    </nav>
+                </div>
+            </nav>
+        </div>
+        <div class="container mt-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    @if($salesInfo)
+                        <!-- Informasi Kontak -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-address-card text-primary me-2"></i>Informasi Kontak
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-item d-flex align-items-center p-3 border rounded mb-3">
+                                            <div class="icon-wrapper me-3">
+                                                <i class="fas fa-envelope fa-lg text-primary"></i>
+                                            </div>
+                                            <div class="info-content">
+                                                <div class="text-muted small">Email</div>
+                                                <div class="fw-bold">{{ $salesInfo->email }}</div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="info-item d-flex align-items-center p-3 border rounded mb-3">
-                                        <div class="icon-wrapper me-3">
-                                            <i class="fas fa-phone fa-lg text-primary"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <div class="text-muted small">Nomor Telepon</div>
-                                            <div class="fw-bold">{{ $salesInfo->phone_number }}</div>
+                                    <div class="col-md-6">
+                                        <div class="info-item d-flex align-items-center p-3 border rounded mb-3">
+                                            <div class="icon-wrapper me-3">
+                                                <i class="fas fa-phone fa-lg text-primary"></i>
+                                            </div>
+                                            <div class="info-content">
+                                                <div class="text-muted small">Nomor Telepon</div>
+                                                <div class="fw-bold">{{ $salesInfo->phone_number }}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <h5 class="mt-4 mb-3"><i class="fas fa-university text-primary me-2"></i>Informasi Rekening Bank</h5>
-                    <div class="row">
-                        @foreach(['BRI' => 'bank_bri', 'BCA' => 'bank_bca', 'Mandiri' => 'bank_mandiri'] as $bankName => $bankField)
-                            @if($salesInfo->$bankField)
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100 border-primary">
-                                        <div class="card-body">
-                                            <h6 class="card-title">{{ $bankName }}</h6>
-                                            <p class="card-text">
-                                                <strong>No. Rekening:</strong> {{ $salesInfo->$bankField }}<br>
-                                                <strong>Atas Nama:</strong> {{ $salesInfo->{$bankField.'_name'} ?? 'N/A' }}
-                                            </p>
+                        <h5 class="mt-4 mb-3"><i class="fas fa-university text-primary me-2"></i>Informasi Rekening Bank</h5>
+                        <div class="row">
+                            @foreach(['BRI' => 'bank_bri', 'BCA' => 'bank_bca', 'Mandiri' => 'bank_mandiri'] as $bankName => $bankField)
+                                @if($salesInfo->$bankField)
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100 border-primary">
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ $bankName }}</h6>
+                                                <p class="card-text">
+                                                    <strong>No. Rekening:</strong> {{ $salesInfo->$bankField }}<br>
+                                                    <strong>Atas Nama:</strong> {{ $salesInfo->{$bankField.'_name'} ?? 'N/A' }}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
+                                @endif
+                            @endforeach
+                        </div>
 
-                    <h5 class="mt-4 mb-3"><i class="fas fa-wallet text-primary me-2"></i>E-Wallet</h5>
-                    <div class="row">
-                        @foreach(['DANA' => 'dana', 'OVO' => 'ovo', 'GoPay' => 'gopay'] as $walletName => $walletField)
-                            @if($salesInfo->$walletField)
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100 border-success">
-                                        <div class="card-body">
-                                            <h6 class="card-title">{{ $walletName }}</h6>
-                                            <p class="card-text">
-                                                <strong>Nomor:</strong> {{ $salesInfo->$walletField }}<br>
-                                                <strong>Atas Nama:</strong> {{ $salesInfo->{$walletField.'_name'} ?? 'N/A' }}
-                                            </p>
+                        <h5 class="mt-4 mb-3"><i class="fas fa-wallet text-primary me-2"></i>E-Wallet</h5>
+                        <div class="row">
+                            @foreach(['DANA' => 'dana', 'OVO' => 'ovo', 'GoPay' => 'gopay'] as $walletName => $walletField)
+                                @if($salesInfo->$walletField)
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100 border-success">
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ $walletName }}</h6>
+                                                <p class="card-text">
+                                                    <strong>Nomor:</strong> {{ $salesInfo->$walletField }}<br>
+                                                    <strong>Atas Nama:</strong> {{ $salesInfo->{$walletField.'_name'} ?? 'N/A' }}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
+                                @endif
+                            @endforeach
+                        </div>
 
-                    <button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#editModal">
-                        <i class="fas fa-edit me-2"></i>Edit Informasi
-                    </button>
-                @else
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>Belum ada informasi penjualan.
-                    </div>
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createModal">
-                        <i class="fas fa-plus me-2"></i>Tambah Informasi
-                    </button>
-                @endif
+                        <button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#editModal">
+                            <i class="fas fa-edit me-2"></i>Edit Informasi
+                        </button>
+                    @else
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>Belum ada informasi penjualan.
+                        </div>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createModal">
+                            <i class="fas fa-plus me-2"></i>Tambah Informasi
+                        </button>
+                    @endif
+                </div>
             </div>
         </div>
-    </div>
 
 
     <!-- Create/Edit Modal -->
@@ -467,4 +478,5 @@
         }
 
     </style>
+    </main>
 @endsection
