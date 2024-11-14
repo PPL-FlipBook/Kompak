@@ -29,7 +29,9 @@ use Illuminate\Support\Facades\File;
 
 
 /*Route User*/
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+});
 
 Route::middleware(['auth', 'role:super admin'])->group(function () {
     Route::get('/create', [DashboardController::class, 'create'])->name('user.create');
@@ -55,7 +57,7 @@ Route::middleware('guest')->group(function () {
 Route::get('/Logout',[AuthController::class, 'Logout'])->name('auth.logout');
 
 /* Route Book */
-Route::middleware(['auth:user', /*'role:admin'*/])->group(function () {
+Route::middleware(['auth:user', /*'role:author'*/])->group(function () {
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
     Route::get('/books/{id}/edit', [BookController::class, 'edit'])->name('books.edit');
@@ -89,7 +91,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/purchases/{purchase}', [PurchaseController::class, 'destroy'])->name('purchases.destroy');
     Route::put('/purchases/{purchase}/update-status/{status}', [PurchaseController::class, 'updateStatus'])
         ->name('purchases.updateStatus')
-        ->middleware('can:admin');
+        ->middleware('can:author');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
@@ -101,7 +103,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/library/{id}', [LibraryController::class, 'show'])->name('library.show');
 });
 
-Route::resource('sales-information', SalesInformationController::class);
+Route::middleware(['auth'])->group(function () {
+    Route::resource('sales-information', SalesInformationController::class);
+});
 
 /*Route Storage*/
 Route::get('storage/book{filename}', function ($filename) {

@@ -65,7 +65,6 @@
                                 </div>
                             @endif
 
-
                             <!-- Bank BCA -->
                             @if($salesInfo && $salesInfo->bank_bca)
                                 <div class="col">

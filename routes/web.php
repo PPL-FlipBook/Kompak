@@ -29,7 +29,9 @@ use Illuminate\Support\Facades\File;
 
 
 /*Route User*/
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+});
 
 Route::middleware(['auth', 'role:super admin'])->group(function () {
     Route::get('/create', [DashboardController::class, 'create'])->name('user.create');
@@ -101,7 +103,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/library/{id}', [LibraryController::class, 'show'])->name('library.show');
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::resource('sales-information', SalesInformationController::class);
 });
 

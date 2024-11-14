@@ -16,9 +16,6 @@ class BankAccountController extends Controller
         return view('bank_accounts.index', compact('bankAccounts'));
     }
 
-    /**
-     * Tampilkan form untuk menambahkan rekening bank baru.
-     */
     public function create()
     {
         return view('bank_accounts.create');

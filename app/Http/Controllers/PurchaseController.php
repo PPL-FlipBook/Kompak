@@ -22,12 +22,15 @@ class PurchaseController extends Controller
     {
         $user = Auth::user();
 
-        // Jika pengguna adalah admin, ambil semua pembelian
+        // Ambil semua buku yang dimiliki oleh admin yang sedang login
+        $books = Book::with('user.salesInformation')->where('user_id', $user->id)->pluck('id');
+
+        // Jika pengguna adalah admin, ambil semua pembelian yang terkait dengan buku yang dimiliki
         if ($user->role === 'admin') {
-            $purchases = Purchase::with('book')->get();
+            $purchases = Purchase::whereIn('book_id', $books)->with('book')->get();
         } elseif ($user->role === 'user') {
             // Jika pengguna adalah user, ambil hanya pembelian mereka
-            $purchases = Purchase::where('user_id', $user->id)->get();
+            $purchases = Purchase::where('user_id', $user->id)->with('book')->get();
         } else {
             // Jika role tidak dikenali, bisa redirect atau abort
             return redirect()->route('dashboard.index')->with('error', 'Akses tidak diizinkan.');
@@ -41,8 +44,8 @@ class PurchaseController extends Controller
     // Menampilkan form pembelian untuk flipbook tertentu
     public function create($flipbookId)
     {
-        $flipbook = Book::findOrFail($flipbookId);
-        $salesInfo = SalesInformation::first();
+        $flipbook = Book::with('user.salesInformation')->findOrFail($flipbookId);
+        $salesInfo = $flipbook->user->salesInformation; // Get sales information from the book's owner
 
         if ($flipbook->price == 0) {
             return redirect()->route('frontend.example1', $flipbook->id);
@@ -145,8 +148,8 @@ class PurchaseController extends Controller
     // Menghapus pembelian tertentu
     public function destroy(Purchase $purchase)
     {
-        // Pastikan hanya pemilik yang dapat menghapus pembelian ini
-        if ($purchase->user_id !== Auth::id()) {
+        // Cek apakah pengguna yang sedang login adalah pemilik pembelian atau admin yang memiliki buku
+        if ($purchase->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
             abort(403, 'Anda tidak diizinkan menghapus pembelian ini.');
         }
 
