@@ -173,7 +173,7 @@ class BookController extends Controller
         try {
             $book->categories()->detach();
             $book->delete();
-            return redirect()->route('books.index')->with('delete', 'Buku berhasil dihapus');
+            return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus');
         } catch (\Exception $e) {
             return redirect()->route('books.index')->with('error', 'Error deleting book: ' . $e->getMessage());
         }

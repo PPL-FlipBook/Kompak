@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use App\Models\User;
 
 class CategorieSeeder extends Seeder
 {
@@ -17,14 +15,22 @@ class CategorieSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('categories')->insert([
-            [
+        $categories = [
+            'Fiksi', 'Nonfiksi', 'Agama', 'Anak-anak', 'Remaja & Young Adult',
+            'Pendidikan', 'Ilmu Pengetahuan & Teknologi', 'Hobi & Keterampilan',
+            'Komik & Novel Grafis', 'Kesehatan & Kebugaran', 'Psikologi & Filosofi',
+            'Sastra', 'Pariwisata & Perjalanan', 'Keluarga & Parenting',
+            'Keuangan', 'Olahraga', 'Seni & Musik', 'Filsafat', 'Bahasa',
+            'Peta & Geografi'
+        ];
+
+        foreach ($categories as $category) {
+            DB::table('categories')->insert([
                 'id' => Str::uuid()->toString(),
-                'name' => 'Category 1',
+                'name' => $category,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-            // Tambahkan data kategori lainnya jika diperlukan
-        ]);
+            ]);
+        }
     }
 }

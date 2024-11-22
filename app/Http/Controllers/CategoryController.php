@@ -75,7 +75,7 @@ class CategoryController extends Controller
 
         try {
             $category->delete();
-            return redirect()->route('kategory.index')->with('delete', 'Kategori berhasil dihapus');
+            return redirect()->route('kategory.index')->with('success', 'Kategori berhasil dihapus');
         } catch (\Exception $e) {
             return redirect()->route('kategory.index')->with('error', 'Error deleting category: ' . $e->getMessage());
         }

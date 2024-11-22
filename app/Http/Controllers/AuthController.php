@@ -48,33 +48,41 @@ class AuthController extends Controller
 
     public function registerProceed(Request $request)
     {
+        // Pesan kesalahan untuk validasi
         $messages = [
             'name.required' => 'Nama tidak boleh kosong.',
             'email.required' => 'Email tidak boleh kosong.',
             'email.email' => 'Email harus valid.',
             'password.required' => 'Password tidak boleh kosong.',
+            'password.confirmed' => 'Password dan konfirmasi password tidak cocok.',
         ];
 
+        // Validasi input
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|confirmed',
         ], $messages);
 
+        // Cek apakah email sudah terdaftar
         $user = User::where('email', $request->email)->first();
         if ($user) {
             return back()->with('pesan', ['danger', 'Email sudah terdaftar.']);
         }
 
+        // Membuat pengguna baru
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
-        $user->is_active = 0;
-        $user->token_activation = Str::random(60);
+        $user->is_active = 0; // Status aktif pengguna
+        $user->token_activation = Str::random(60); // Token untuk aktivasi
         $user->save();
 
+        // Mengirim email aktivasi
         Mail::to($user->email)->queue(new RegisterMail($user));
+
+        // Redirect ke halaman login dengan pesan sukses
         return redirect('/login')->with('pesan', ['success', 'Registrasi Berhasil, cek email anda untuk aktivasi']);
     }
 

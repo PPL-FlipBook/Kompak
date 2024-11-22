@@ -9,16 +9,16 @@
         <div class="text-sm text-gray-500 text-center mb-4">
             @if (session('pesan'))
                 <span class="inline-block bg-{{ session('pesan')[0] }}-100 text-{{ session('pesan')[0] }}-700 rounded text-center">{{ session('pesan')[1] }}</span>
-            @else
-                <div class="text-sm text-gray-500 text-center mb-4">
-                    <span>Silahkan gunakan email pribadi anda.</span>
-                </div>
-            @endif
                 <div class="mb-4 relative">
                     @error('password')
                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
+            @else
+                <div class="text-sm text-gray-500 text-center mb-4">
+                    <span>Silahkan gunakan email pribadi anda.</span>
+                </div>
+            @endif
         </div>
         <div class="mb-4 relative">
             <span class="absolute left-3 top-3">

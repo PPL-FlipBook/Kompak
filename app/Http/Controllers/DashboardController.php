@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\LogActivity;
+use App\Models\Purchase;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -21,23 +22,38 @@ class DashboardController extends Controller
         // Paginate users for display
         $users = User::paginate(5);
 
-        // Count total books and users
-        $totalBooks = Book::count();
+        // Count total books and users for the authenticated admin only
+        $totalBooks = Book::where('user_id', $user->id)->count(); // Count books for the authenticated admin
         $totalUsers = User::count();
 
-        // Count books and users created since last week
-        $changeBooks = Book::where('created_at', '>=', now()->subWeek())->count();
+        // Count books created since last week for the authenticated admin only
+        $changeBooks = Book::where('user_id', $user->id)
+            ->where('created_at', '>=', now()->subWeek())
+            ->count();
+
+        // Count users created since last week
         $changeUsers = User::where('created_at', '>=', now()->subWeek())->count();
+
+        // Count total purchases for the authenticated admin's books
+        $totalPurchases = Purchase::whereHas('book', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->count();
+
+        // Count purchases made since last week for the authenticated admin's books
+        $changePurchases = Purchase::whereHas('book', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->where('created_at', '>=', now()->subWeek())->count();
 
         // Calculate changes (optional, depending on your display needs)
         $changeB = $changeBooks; // This represents the number of new books
         $change = $changeUsers; // This represents the number of new users
+        $changeP = $changePurchases; // This represents the number of new purchases
 
         // Get the latest log activity (if needed)
         $subjectId = LogActivity::where('event', 'created')->latest()->first();
 
         // Pass the data to the view
-        return view('backend.dashboard', compact('users', 'user', 'totalUsers', 'changeB', 'change', 'subjectId', 'totalBooks', 'changeBooks', 'changeUsers'));
+        return view('backend.dashboard', compact('users', 'user', 'totalUsers', 'changeB', 'change', 'subjectId', 'totalBooks', 'changeBooks', 'changeUsers', 'totalPurchases', 'changePurchases'));
     }
     /**
      * Show the form for creating a new resource.

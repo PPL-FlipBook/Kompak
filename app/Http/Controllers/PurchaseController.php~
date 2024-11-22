@@ -25,11 +25,8 @@ class PurchaseController extends Controller
         // Ambil semua buku yang dimiliki oleh admin yang sedang login
         $books = Book::with('user.salesInformation')->where('user_id', $user->id)->pluck('id');
 
-        // Jika pengguna adalah super admin, ambil semua pembelian yang terkait dengan buku milik siapa saja
-        if ($user->role === 'super admin') {
-            $purchases = Purchase::with('book')->get();
-        } elseif ($user->role === 'admin') {
-            // Jika pengguna adalah admin, ambil hanya pembelian yang terkait dengan buku yang dimiliki
+        // Jika pengguna adalah admin, ambil semua pembelian yang terkait dengan buku yang dimiliki
+        if ($user->role === 'admin') {
             $purchases = Purchase::whereIn('book_id', $books)->with('book')->get();
         } elseif ($user->role === 'user') {
             // Jika pengguna adalah user, ambil hanya pembelian mereka

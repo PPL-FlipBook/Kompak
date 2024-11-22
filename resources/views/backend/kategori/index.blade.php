@@ -26,99 +26,90 @@
                             {{ session('error') }}
                         </div>
                     @endif
-
-                        @if(session('delete'))
-                            <div class="alert alert-danger">
-                                <i class="ni ni-bell-55"></i>
-                                {{ session('delete') }}
-                            </div>
-                        @endif
                 </div>
             </div>
         </nav>
         <div class="row m-md-4">
-            <div class="col-lg-6 mb-lg-0 mb-4">
+            <div class="col-lg-12 mb-lg-0 mb-4">
                 <div class="card">
                     <div class="card-header pb-0 p-3">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="mb-2">Data Kategori</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Data Kategori</h6>
                             <button type="button" class="btn btn-primary btn-sm mb-0" data-bs-toggle="modal" data-bs-target="#tambahKategori">
                                 + Tambah Kategori
                             </button>
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table align-items-center">
-                            <thead>
-                            <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($categories as $category)
+                        <div class="p-3"> <!-- Add padding here -->
+                            <table class="table table-bordered table-striped">
+                                <thead class="bg-dark text-white">
                                 <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1 align-items-center">
-                                            <div class="ms-2">
-                                                <h6 class="text-sm mb-0">{{ $category->name }}</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#editKategori-{{ $category->id }}">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#hapusKategori-{{ $category->id }}" class="text-danger">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
+                                    <th class="text-uppercase text-xxs font-weight-bolder text-center">Nama</th>
+                                    <th class="text-uppercase text-xxs font-weight-bolder text-center">Aksi</th>
                                 </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                @foreach($categories as $category)
+                                    <tr>
+                                        <td class="text-center"> <!-- Center text in this cell -->
+                                            <div class="d-flex px-2 py-1 align-items-center justify-content-center">
+                                                <div class="ms-2">
+                                                    <h6 class="text-sm mb-0">{{ $category->name }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center"> <!-- Center text in this cell -->
+                                            <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#editKategori-{{ $category->id }}">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="#" class="text-danger" data-bs-toggle="modal" data-bs-target="#hapusKategori-{{ $category->id }}">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div> <!-- End of padding div -->
                     </div>
 
                     <!-- Pagination -->
                     <div class="d-flex justify-content-center">
-                        <ul class="pagination">
-                            {{-- Previous Page Link --}}
-                            @if ($categories->onFirstPage())
-                                <li class="page-item disabled" aria-disabled="true">
-                                    <span class="page-link">&laquo;</span>
-                                </li>
-                            @else
-                                <li class="page-item">
-                                    <a class="page-link" href="{{ $categories->previousPageUrl() }}" rel="prev">&laquo;</a>
-                                </li>
-                            @endif
-
-                            {{-- Pagination Elements --}}
-                            @foreach ($categories->links()->elements as $element)
-                                @if (is_string($element))
-                                    <li class="page-item disabled" aria-disabled="true"><span class="page-link">{{ $element }}</span></li>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm">
+                                {{-- Previous Page Link --}}
+                                @if ($categories->onFirstPage())
+                                    <li class="page-item disabled" aria-disabled="true"><span class="page-link">&laquo;</span></li>
+                                @else
+                                    <li class="page-item"><a class="page-link" href="{{ $categories->previousPageUrl() }}" rel="prev">&laquo;</a></li>
                                 @endif
 
-                                @if (is_array($element))
-                                    @foreach ($element as $page => $url)
-                                        @if ($page == $categories->currentPage())
-                                            <li class="page-item active" aria-current="page"><span class="page-link">{{ $page }}</span></li>
-                                        @else
-                                            <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
-                                        @endif
-                                    @endforeach
-                                @endif
-                            @endforeach
+                                {{-- Pagination Elements --}}
+                                @foreach ($categories->links()->elements as $element)
+                                    @if (is_string($element))
+                                        <li class="page-item disabled" aria-disabled="true"><span class="page-link">{{ $element }}</span></li>
+                                    @endif
 
-                            {{-- Next Page Link --}}
-                            @if ($categories->hasMorePages())
-                                <li class="page-item">
-                                    <a class="page-link" href="{{ $categories->nextPageUrl() }}" rel="next">&raquo;</a>
-                                </li>
-                            @else
-                                <li class="page-item disabled" aria-disabled="true"><span class="page-link">&raquo;</span></li>
-                            @endif
-                        </ul>
+                                    @if (is_array($element))
+                                        @foreach ($element as $page => $url)
+                                            @if ($page == $categories->currentPage())
+                                                <li class="page-item active" aria-current="page"><span class="page-link">{{ $page }}</span></li>
+                                            @else
+                                                <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($categories->hasMorePages())
+                                    <li class="page-item"><a class="page-link" href="{{ $categories->nextPageUrl() }}" rel="next">&raquo;</a></li>
+                                @else
+                                    <li class="page-item disabled" aria-disabled="true"><span class="page-link">&raquo;</span></li>
+                                @endif
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

@@ -58,19 +58,8 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|confirmed',
         ], $messages);
-
-        // Daftar domain email yang dianggap sebagai email perusahaan atau komunitas
-        $companyDomains = ['@mail.ukrim.ac.id'];
-
-        // Ambil domain dari email
-        $emailDomain = substr(strrchr($request->email, "@"), 1);
-
-        // Cek apakah domain ada dalam daftar
-        if (in_array($emailDomain, $companyDomains)) {
-            return back()->with('pesan', ['danger', 'Gunakan email pribadi, bukan email perusahaan atau komunitas.']);
-        }
 
         $user = User::where('email', $request->email)->first();
         if ($user) {

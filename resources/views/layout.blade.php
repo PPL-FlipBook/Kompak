@@ -77,6 +77,16 @@
                 height: 150px; /* Atur tinggi gambar untuk layar kecil */
             }
         }
+        .custom-card-title {
+            font-size: 1.1rem; /* Ukuran font untuk judul */
+            font-weight: bold; /* Berat font untuk judul */
+            margin-bottom: 0.25rem; /* Margin bawah untuk judul */
+        }
+
+        .custom-card-price {
+            font-size: 0.9rem; /* Ukuran font untuk harga */
+            margin-bottom: 0.5rem; /* Margin bawah untuk harga */
+        }
     </style>
   <title>
     FlipBook Dashboard
@@ -221,7 +231,7 @@
                       </div>
                   </div>
                   <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                  <p class="text-white my-auto fw-bold">Hi, {{ auth()->user()->role }}</p>
+                  <p class="text-white my-auto fw-bold">Hi, {{ auth()->user()->name }}</p>
                   </div>
                   <ul class="navbar-nav justify-content-end">
                       <li class="nav-item d-flex align-items-center">
